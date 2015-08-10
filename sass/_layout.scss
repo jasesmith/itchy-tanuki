@@ -74,14 +74,10 @@ html, body, .wrapper {
         display: flex;
         flex-direction: column;
         flex: 0 1 auto;
-        overflow: auto;
         background: $dark;
         padding: $gutter;
         color: $light;
         overflow: auto;
-        > * {
-            flex: 0 0 auto;
-        }
     }
 }
 

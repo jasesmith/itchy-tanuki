@@ -376,16 +376,10 @@ html, body, .wrapper {
     -webkit-flex: 0 1 auto;
         -ms-flex: 0 1 auto;
             flex: 0 1 auto;
-    overflow: auto;
     background: #363639;
     padding: 2rem;
     color: #FFF;
     overflow: auto; }
-    .workspace .settings > * {
-      -webkit-box-flex: 0;
-      -webkit-flex: 0 0 auto;
-          -ms-flex: 0 0 auto;
-              flex: 0 0 auto; }
 
 .separator {
   background: currentColor;
@@ -670,7 +664,7 @@ section .button {
 .as-sortable-hidden {
   display: none !important; }
 
-.canvas {
+.workspace .canvas {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -679,66 +673,66 @@ section .button {
   -webkit-box-direction: normal;
   -webkit-flex-direction: row;
       -ms-flex-direction: row;
-          flex-direction: row; }
+          flex-direction: row;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0;
+  -webkit-box-flex: 3;
+  -webkit-flex: 3;
+      -ms-flex: 3;
+          flex: 3;
+  z-index: 2; }
+  .workspace .canvas h1 {
+    font-weight: 200; }
+.workspace .settings {
+  padding: 0;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  -webkit-flex-direction: row-reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  z-index: 2;
+  -webkit-box-flex: 2;
+  -webkit-flex: 2;
+      -ms-flex: 2;
+          flex: 2; }
 
-.spork-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  background: snow;
-  border: 2px solid;
-  margin: 0;
-  padding: .5em;
-  -webkit-transition: .3s ease-out;
-          transition: .3s ease-out;
-  border-radius: .5em;
-  -webkit-transform: translate(0.5em, -2em) scale(0);
-      -ms-transform: translate(0.5em, -2em) scale(0);
-          transform: translate(0.5em, -2em) scale(0);
-  box-shadow: 0 .75em 2em -.75em; }
-  .spork-menu.active {
-    -webkit-transform: translate(0.5em, -2em) scale(1);
-        -ms-transform: translate(0.5em, -2em) scale(1);
-            transform: translate(0.5em, -2em) scale(1); }
-  .spork-menu::before, .spork-menu::after {
-    content: '';
-    position: absolute;
-    top: 1.35em;
-    right: 100%;
-    border: 0px solid transparent;
-    border-width: .65em .5em .65em 0; }
-  .spork-menu::before {
-    border-right-color: inherit;
-    -webkit-transform: translate(-2px, 0);
-        -ms-transform: translate(-2px, 0);
-            transform: translate(-2px, 0); }
-  .spork-menu::after {
-    border-right-color: snow; }
-  .spork-menu div {
-    width: auto;
-    white-space: nowrap;
-    cursor: pointer;
-    line-height: 1; }
-    .spork-menu div.flex-row {
-      -webkit-box-pack: justify;
-      -webkit-justify-content: space-between;
-          -ms-flex-pack: justify;
-              justify-content: space-between; }
-    .spork-menu div + div {
-      border-top: 1px solid rgba(0, 0, 0, 0.3);
-      margin-top: .5em;
-      padding-top: .5em; }
-    .spork-menu div span {
-      display: block; }
-      .spork-menu div span + span {
-        margin-left: .5em; }
-      .spork-menu div span:hover {
-        color: skyblue; }
-
-.x-ray .spork ul li {
-  background: rgba(0, 0, 0, 0.1); }
-  .x-ray .spork ul li .node {
-    opacity: .7; }
+.color-brick {
+  text-align: center;
+  font-family: monospace;
+  padding: 1em;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-transition: .3s;
+          transition: .3s;
+  z-index: 1; }
+  .color-brick.current {
+    z-index: 2;
+    box-shadow: 0 0 0 0.5em #FFF inset; }
+  .color-brick span {
+    font-size: 85%; }
 
 /*# sourceMappingURL=styles.css.map */

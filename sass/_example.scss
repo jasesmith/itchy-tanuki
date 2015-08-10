@@ -1,69 +1,46 @@
-.canvas {
+.workspace  {
+    .main {
+        // flex-direction: column;
+    }
+    .canvas {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        flex:3;
+        z-index: 2;
+        h1 {
+            font-weight: 200;
+        }
+    }
+
+    .settings {
+        padding: 0;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        z-index: 2;
+        flex: 2;
+        // align-items: flex-start;
+        // justify-content: flex-start;
+        // border-left: .5em solid;
+    }
+}
+.color-brick {
+    text-align: center;
+    font-family: monospace;
+    padding: 1em;
+    flex: 1 0 auto;
     display: flex;
-    flex-direction: row;
-}
-
-.spork-menu {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 5;
-    background: snow;
-    border: 2px solid;
-    margin: 0;
-    padding: .5em;
-    transition: .3s ease-out;
-    border-radius: .5em;
-    transform: translate(.5em, -2em) scale(0);
-    box-shadow: 0 .75em 2em -.75em;
-    &.active {
-        transform: translate(.5em, -2em) scale(1);
+    align-items: center;
+    justify-content: center;
+    transition: .3s;
+    z-index: 1;
+    &.current {
+        z-index: 2;
+        box-shadow: 0 0 0 .5em $light inset;
     }
-    &::before,
-    &::after {
-        content: '';
-        position: absolute;
-        top: 1.35em;
-        right: 100%;
-        border: 0px solid transparent;
-        border-width: .65em .5em .65em 0;
+    span {
+        font-size: 85%;
     }
-    &::before {
-        border-right-color: inherit;
-        transform: translate(-2px, 0);
-    }
-    &::after {
-        border-right-color: snow;
-    }
-    div {
-        width: auto;
-        white-space: nowrap;
-        cursor: pointer;
-        line-height: 1;
-        &.flex-row {
-            justify-content: space-between;
-        }
-        + div {
-            border-top: 1px solid rgba(#000,.3);
-            margin-top: .5em;
-            padding-top: .5em;
-        }
-        span {
-            display: block;
-            + span {
-                margin-left: .5em;
-            }
-            &:hover {
-                color: skyblue;
-            }
-        }
-    }
-}
-
-// electrical wiring
-.x-ray .spork ul li {
-	background: rgba(#000,.1);
-	.node {
-		opacity: .7;
-	}
 }

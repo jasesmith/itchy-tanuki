@@ -1,47 +1,28 @@
 <!DOCTYPE html>
 <html ng-app="app" ng-controller="AppController">
     <head>
-        <title>{{headline}}</title>
+        <title>{{color}} • {{headline}}</title>
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" media="screen" charset="utf-8" />
         <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8" />
     </head>
     <body class="">
 
-        <div class="wrapper" ng-cloak>
-
-            <header class="" ng-if="headline">
-
-                <div class="mark">
-                    <i class="fa fa-{{icon}}" ng-if="icon"></i>
-                    {{headline}}
-                </div>
-
-            </header>
+        <div class="wrapper" ng-cloak ng-style="{'background': color}" ng-class="setClasses(color)">
 
             <div class="workspace">
 
                 <main class="main">
-                    <div class="canvas" ng-class="{'x-ray': xRay}">
-                        <div>
-                            feature goes here
+                    <div class="canvas">
+                        <div class="flex-row flex-1" style="align-items: baseline;justify-content: center;">
+                            <div style="margin-right: 1em;"><fa name="refresh" size="2"></fa></div>
+                            <h1>{{color}}</h1>
                         </div>
                     </div>
 
-                    <div class="settings">
-                        <div class="flex-row">
-                            <div class="flex-column flex-1">
-                                <b>options<hr /></b>
-                            </div>
-                            <div class="flex-column flex-1">
-                                <b>visual styles<hr /></b>
-                            </div>
+                    <div class="settings" ng-if="colorHistory.length > 1">
+                        <div class="color-brick" ng-repeat="c in colorHistory" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color)">
+                            <span>{{c}}</span>
                         </div>
-
-                        <b><br />things<hr /></b>
-                        <div></div>
-
-                        <b><br />more things<hr /></b>
-                        <div></div>
                     </div>
                 </main>
 
@@ -57,5 +38,4 @@
     <script src="bower_components/jamfu/jamfu.js"></script>
 
     <script src="js/app.js"></script>
-    <script src="js/utils.min.js"></script>
 </html>
