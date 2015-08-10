@@ -1,0 +1,261 @@
+input:not(.exclude),
+button:not(.exclude),
+.button:not(.exclude),
+textarea:not(.exclude),
+select:not(.exclude) {
+    font-size: 1rem;
+    border: 0;
+    line-height: 1;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance:none;
+    outline: none;
+    transition: all .3s;
+    outline-offset: 0;
+    margin: 0;
+    &[disabled] {
+        opacity: .3;
+    }
+    &::-moz-focus-inner { // Remove button padding in FF
+        border: 0;
+        padding: 0;
+    }
+}
+
+input:not(.exclude) {
+    &[type=radio],
+    &[type=checkbox] {
+        background: none;
+        vertical-align: middle;
+        color: currentColor;
+        width: 1em;
+        height: 1em;
+        line-height: .75;
+        text-align: center;
+        &:before {
+            font-family: FontAwesome;
+            font-size: 1em;
+        }
+    }
+
+    // RADIO BUTTONS
+    &[type=radio] {
+        border-radius: 2em;
+        &:before {
+            content: '\f10c';
+        }
+        &:checked:before {
+            content: '\f192';
+            color: $active;
+        }
+    }
+
+    // CHECKBOXES
+    &[type=checkbox] {
+        border-radius: .2em;
+        &:before {
+            content: "\f00c"; // check
+            opacity: .4;
+        }
+        &:checked:before {
+            color: $active;
+            opacity: 1;
+        }
+    }
+
+    // SLIDERS
+    &[type="range"] {
+        padding: 0;
+        border: 0;
+        vertical-align: middle;
+        width: auto;
+        border-radius: .2em;
+        height: .3em;
+        margin: 0 .5em;
+        background: currentColor; //rgba($dark, .3);
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 1em;
+            height: 1em;
+            transform: scale(1.25, 1.25);
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px rgba($dark, .3) inset, 0px 2px 2px 0px rgba(#000, .13);
+            background: $active;
+        }
+        &:focus,
+        &:active {
+            &::-webkit-slider-thumb {
+                box-shadow: 0 0 1em 0;
+            }
+        }
+    }
+
+    &[type="checkbox"].toggle {
+        border-radius: 1em;
+        width: 1.75em;
+        height: 1em;
+        &:before {
+            left: 0;
+            top: 50%;
+            width: 1em;
+            height: 1em;
+            border-radius: 1em;
+            transition: .2s;
+            transform: translate(0, -50%) scale(.7, .7);
+        }
+        &:checked {
+            &:before {
+                transform: translate(75%, -50%) scale(.7, .7);
+            }
+        }
+    }
+
+    // ALPHANUMERICS
+    &:not([type="radio"]):not([type="checkbox"]):not([type="range"]) {
+        border-radius: .25em;
+        border: 2px solid;
+        width: auto;
+        display: inline-block;
+        padding: .5em;
+        margin: 0;
+        &[readonly] {
+            background: mix($dark, $light, 35%);
+        }
+    }
+
+    &[type="number"] {
+        -webkit-appearance: text;
+        width: 25%;
+        padding: .3em .5em;
+        display: inline-block;
+    }
+}
+
+select:not(.exclude) {
+    border-radius: .25em;
+    border: 2px solid;
+    width: auto;
+    display: inline-block;
+    padding: .5em;
+    margin: 0;
+}
+
+textarea:not(.exclude) {
+    width: 100%;
+    padding: 1em;
+    display: block;
+    background: transparent;
+    resize: none;
+    line-height: 1.4;
+    &.basic {
+        background: $light;
+        border-radius: .3em;
+    }
+}
+
+input::-webkit-input-placeholder {
+}
+
+button:not(.exclude),
+.button:not(.exclude) {
+    padding: .4em .5em;
+    position: relative;
+    font-family: $base-font;
+    text-align: center;
+    border-radius: .25em;
+    &.cancel {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    &[data-text]:after {
+        content: attr(data-text);
+        font-size: 1em;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    small {
+        display: block;
+        font-size: .7em;
+        opacity: .3;
+        padding-top:.3em;
+    }
+    &.action {
+        span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-decoration: none;
+        }
+    }
+    &:first-of-type {
+        margin-left: 0;
+    }
+    &:last-of-type {
+        margin-right: 0;
+    }
+    &.ng-enter,
+    &.ng-leave {
+        transform-origin: 100% 0;
+        box-shadow: none;
+    }
+    &.ng-enter,
+    &.ng-leave.ng-leave-active
+    {
+        transform: scale(0, 1);
+    }
+    &.ng-leave,
+    &.ng-enter.ng-enter-active {
+        transform: scale(1, 1);
+    }
+
+}
+
+/* CONTEXT OVERRIDES */
+section {
+    button,
+    .button {
+        border-radius: .1rem;
+        padding: 1rem;
+    }
+}
+
+.flex-wrap {
+    button,
+    .button {
+        margin: .1em;
+        padding: .5em 1em;
+    }
+}
+
+.button-bar {
+    button,
+    .button {
+        padding-left: 0;
+        padding-right: 0;
+        &:first-of-type {
+            border-radius: .2em 0 0 .2em;
+        }
+        &:last-of-type {
+            border-radius: 0 .2em .2em 0;
+        }
+    }
+}
+
+
+.toggle-bar {
+    .item {
+        margin: 0;
+        padding: .5em 0;
+        text-align: center;
+        border-radius: .25em;
+    }
+    input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+}

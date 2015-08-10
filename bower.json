@@ -1,0 +1,24 @@
+{
+  "name": "itchy-tanuki",
+  "version": "0.0.1",
+  "homepage": "https://github.com/jasesmith/itchy-tanuki",
+  "authors": [
+    "Jase <jase@star29.com>"
+  ],
+  "description": "A color experiment inspired by colorrrs.com",
+  "main": "index.html",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "The Unlicense",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jamfu": "https://github.com/jasesmith/jamfu.git"
+  }
+}

@@ -1,0 +1,52 @@
+// vars
+$dark: #363639;
+$light: #FFF;
+$active: #3CF;
+
+$dark-text-default: $dark;
+$light-text-default: $light;
+
+$apple: #fc1770;
+$tangerine: #ff7f36;
+$banana: #fff261;
+$kiwi: #94ca3d;
+$sky: #15c5ec;
+$berry: #c657af;
+$plum: #7f3fa6;
+
+$transition: all .3s;
+$gutter: 2rem;
+
+$base-font: "Helvetica Neue", "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, Arial, "Lucida Grande", sans-serif;
+$code-font: Consolas, Monaco, 'Andale Mono', monospace;
+
+// functions
+@function contrast-color($color) {
+    @return color-contrast($color);
+}
+
+// from: http://codepen.io/bluesaunders/details/FCLaz
+// Calculeate brightness of a given color.
+@function brightness($color) {
+  @return ((red($color) * .299) + (green($color) * .587) + (blue($color) * .114)) / 255 * 100%;
+}
+
+// Compares contrast of a given color to the light/dark arguments and returns whichever is most "contrasty"
+@function color-contrast($color, $dark: $dark-text-default, $light: $light-text-default) {
+  @if $color == null {
+    @return null;
+  }
+  @else {
+    $color-brightness: brightness($color);
+    $light-text-brightness: brightness($light);
+    $dark-text-brightness: brightness($dark);
+
+    @return if(abs($color-brightness - $light-text-brightness) > abs($color-brightness - $dark-text-brightness), $light, $dark);
+  }
+}
+
+// mixins
+@mixin background-stripes($alpha:0.05, $angle:-45deg, $size:1rem) {
+    background-size: $size $size;
+    background-image: linear-gradient($angle, rgba(#FFF, $alpha) 25%, transparent 25%, transparent 50%, rgba(#FFF, $alpha) 50%, rgba(#FFF, $alpha) 75%, transparent 75%, transparent);
+}

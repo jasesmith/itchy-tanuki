@@ -1,0 +1,21 @@
+.bg-air {background: transparent;}
+.bg-apple {background: $apple;color: contrast-color($apple);}
+.bg-tangerine {background: $tangerine;color: contrast-color($tangerine);}
+.bg-banana {background: $banana;color: contrast-color($banana);}
+.bg-kiwi {background: $kiwi;color: contrast-color($kiwi);}
+.bg-sky {background: $sky;color: contrast-color($sky);}
+.bg-berry {background: $berry;color: contrast-color($berry);}
+.bg-plum {background: $plum;color: contrast-color($plum);}
+.bg-light {background: $light;color: contrast-color($light);}
+.bg-dark {background: $dark;color: contrast-color($dark);}
+
+.fg-air {color: transparent;}
+.fg-apple {color: $apple;}
+.fg-tangerine {color: $tangerine;}
+.fg-banana {color: $banana;}
+.fg-kiwi {color: $kiwi;}
+.fg-sky {color: $sky;}
+.fg-berry {color: $berry;}
+.fg-plum {color: $plum;}
+.fg-light {color: $light;}
+.fg-dark {color: $dark;}
