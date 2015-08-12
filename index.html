@@ -35,7 +35,7 @@
                             <div class="color-info flex-row flex-1">
                                 <div ng-click="doIt()"><fa name="refresh" size="3"></fa></div>
                                 <h1>{{color}}</h1>
-                                <div ng-click="saveColor(color)"><fa name="check" size="3"></fa></div>
+                                <div ng-click="saveColor(color)"><i class="fa fa-3x" ng-class="{'fa-star': isSaved(color), 'fa-star-o': !isSaved(color)}"></i></div>
                             </div>
                             <div class="color-info">
                                 color brightness: {{brightness}}

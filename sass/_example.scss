@@ -47,6 +47,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    label + label {
+        margin-left: 2em;
+    }
 }
 .color-brick {
     position: relative;

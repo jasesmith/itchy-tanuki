@@ -67,13 +67,21 @@
         };
 
         $scope.saveColor = function(color){
-            var c = _.find($scope.myColors, function(item){
+            var index = _.findIndex($scope.myColors, function(item){
                 return item === color;
             });
 
-            if(!c) {
+            if(index > -1) {
+                $scope.myColors.splice(index, 1);
+            } else {
                 $scope.myColors.push(color);
             }
+        };
+
+        $scope.isSaved = function(color){
+            return _.find($scope.myColors, function(item){
+                return item === color;
+            });
         };
 
         $scope.loadColor = function(color){

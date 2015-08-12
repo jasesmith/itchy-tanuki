@@ -46,7 +46,7 @@ input:not(.exclude) {
         }
         &:checked:before {
             content: '\f192';
-            color: $active;
+            // color: $active;
         }
     }
 
@@ -54,11 +54,12 @@ input:not(.exclude) {
     &[type=checkbox] {
         border-radius: .2em;
         &:before {
-            content: "\f00c"; // check
+            content: "\f10c"; // circle-o
             opacity: .4;
         }
         &:checked:before {
-            color: $active;
+            content: "\f00c"; // check
+            // color: $active;
             opacity: 1;
         }
     }

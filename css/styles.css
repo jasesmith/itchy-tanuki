@@ -474,15 +474,14 @@ input:not(.exclude)[type=radio] {
   input:not(.exclude)[type=radio]:before {
     content: '\f10c'; }
   input:not(.exclude)[type=radio]:checked:before {
-    content: '\f192';
-    color: #3CF; }
+    content: '\f192'; }
 input:not(.exclude)[type=checkbox] {
   border-radius: .2em; }
   input:not(.exclude)[type=checkbox]:before {
-    content: "\f00c";
+    content: "\f10c";
     opacity: .4; }
   input:not(.exclude)[type=checkbox]:checked:before {
-    color: #3CF;
+    content: "\f00c";
     opacity: 1; }
 input:not(.exclude)[type="range"] {
   padding: 0;
@@ -761,6 +760,8 @@ section .button {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center; }
+  .color-info label + label {
+    margin-left: 2em; }
 
 .color-brick {
   position: relative;
