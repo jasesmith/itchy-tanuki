@@ -7,11 +7,23 @@
         $scope.icon = 'circle-o';
 
         $scope.colorHistory = [];
+        $scope.myColors = [];
 
         $scope.useHash = false;
+        $scope.showHistory = false;
 
-        $scope._notInRunLoop = function _notInRunLoop() {
+        var _notInRunLoop = function _notInRunLoop() {
             return !$scope.$root.$$phase;
+        };
+
+        var addToColorHistory = function(color){
+            var c = _.find($scope.colorHistory, function(item){
+                return item === color;
+            });
+
+            if(c !== color) {
+                $scope.colorHistory.push(color);
+            }
         };
 
         var doIt = function(color){
@@ -41,12 +53,26 @@
                 window.location.hash = color.replace('#', '#/');
             }
 
-            if ($scope._notInRunLoop()) {
+            if (_notInRunLoop()) {
                 try {
                     // Sometimes we're outside of the Angular run-loop,
                     // and therefore need to manually invoke the `apply` method!
                     $scope.$apply();
                 } catch(e) {}
+            }
+        };
+
+        $scope.doIt = function(){
+            doIt();
+        };
+
+        $scope.saveColor = function(color){
+            var c = _.find($scope.myColors, function(item){
+                return item === color;
+            });
+
+            if(!c) {
+                $scope.myColors.push(color);
             }
         };
 
@@ -85,16 +111,6 @@
         //
         // getHashColor();
 
-        var addToColorHistory = function(color){
-            var c = _.find($scope.colorHistory, function(item){
-                return item === color;
-            });
-
-            if(c !== color) {
-                $scope.colorHistory.push(color);
-            }
-        };
-
 
         $scope.$watch(function () {
             var hash = window.location.hash;
@@ -109,9 +125,9 @@
             }
         });
 
-        $('.canvas .fa').click(function(e) {
-            doIt();
-        });
+        // $('.canvas .fa').click(function(e) {
+        //     doIt();
+        // });
 
     }]);
 

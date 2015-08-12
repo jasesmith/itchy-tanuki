@@ -683,6 +683,13 @@ section .button {
 .as-sortable-hidden {
   display: none !important; }
 
+.workspace .main {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  font-size: 1vmax; }
 .workspace .canvas {
   display: -webkit-box;
   display: -webkit-flex;
@@ -709,14 +716,15 @@ section .button {
   z-index: 2; }
   .workspace .canvas h1 {
     font-weight: 100;
-    font-size: 3.5em; }
+    font-size: 3.5em;
+    margin: 0 1em; }
 .workspace .settings {
   padding: 0;
-  -webkit-box-orient: horizontal;
+  -webkit-box-orient: vertical;
   -webkit-box-direction: reverse;
-  -webkit-flex-direction: row-reverse;
-      -ms-flex-direction: row-reverse;
-          flex-direction: row-reverse;
+  -webkit-flex-direction: column-reverse;
+      -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
   -webkit-flex-wrap: wrap;
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
@@ -725,6 +733,7 @@ section .button {
   -webkit-flex: 1;
       -ms-flex: 1;
           flex: 1;
+  min-height: 10em;
   box-shadow: 0 0 0 .5em; }
 
 .color-display a {
