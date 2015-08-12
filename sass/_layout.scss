@@ -36,6 +36,14 @@ html, body, .wrapper {
     display: flex;
     flex-direction: row;
 }
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.flex-row-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
 
 .flex-column {
     display: flex;

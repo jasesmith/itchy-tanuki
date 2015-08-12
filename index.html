@@ -4,6 +4,15 @@
         <title>{{color}} • {{headline}}</title>
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" media="screen" charset="utf-8" />
         <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8" />
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/moment/min/moment.min.js"></script>
+        <script src="bower_components/underscore/underscore-min.js"></script>
+        <script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
+        <script src="bower_components/jamfu/jamfu.js"></script>
+
+        <script src="js/colors.js"></script>
+        <script src="js/app.js"></script>
     </head>
     <body class="">
 
@@ -13,9 +22,26 @@
 
                 <main class="main">
                     <div class="canvas">
-                        <div class="flex-row flex-1" style="align-items: baseline;justify-content: center;">
-                            <div style="margin-right: 1em;"><fa name="refresh" size="2"></fa></div>
-                            <h1>{{color}}</h1>
+                        <div class="flex-column">
+                            <div class="flex-row color-bar">
+                                <div class="color-brick" ng-repeat="c in lighter track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c)">{{c}}</div>
+                            </div>
+                            <div class="color-brick flex-row flex-1">
+                                <div style="margin-right: 1em;"><fa name="refresh" size="2"></fa></div>
+                                <h1>{{color}}</h1>
+                            </div>
+                            <div class="color-brick">
+                                color brightness: {{brightness}}
+                            </div>
+                            <div class="flex-row color-bar">
+                                <div class="color-brick" ng-repeat="c in darker track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c)">{{c}}</div>
+                            </div>
+                            <div class="color-brick">
+                                <label><input type="checkbox" ng-model="useHash" /> update URL</label>
+                            </div>
+                            <div class="color-brick">
+                                <a href="/{{color}}"><fa name="dot-circle-o" size="large"></fa> <u>{{color}}</u></a>
+                            </div>
                         </div>
                     </div>
 
@@ -30,12 +56,4 @@
         </div>
 
     </body>
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/moment/min/moment.min.js"></script>
-    <script src="bower_components/underscore/underscore-min.js"></script>
-    <script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
-    <script src="bower_components/jamfu/jamfu.js"></script>
-
-    <script src="js/app.js"></script>
 </html>

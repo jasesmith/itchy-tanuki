@@ -292,6 +292,25 @@ html, body, .wrapper {
       -ms-flex-direction: row;
           flex-direction: row; }
 
+.flex-wrap {
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
+
+.flex-row-wrap {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
+
 .flex-column {
   display: -webkit-box;
   display: -webkit-flex;
@@ -704,7 +723,9 @@ section .button {
   -webkit-box-flex: 2;
   -webkit-flex: 2;
       -ms-flex: 2;
-          flex: 2; }
+          flex: 2;
+  background: none;
+  padding-left: 1em; }
 
 .color-brick {
   text-align: center;
@@ -729,10 +750,31 @@ section .button {
   -webkit-transition: .3s;
           transition: .3s;
   z-index: 1; }
+  .color-brick a {
+    text-decoration: none;
+    color: inherit; }
+  .color-brick:hover {
+    -webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+            transform: scale(1.1);
+    z-index: 3; }
   .color-brick.current {
-    z-index: 2;
-    box-shadow: 0 0 0 0.5em #FFF inset; }
+    z-index: 2; }
+    .color-brick.current span {
+      background: #363639;
+      color: #FFF;
+      border-radius: 2em;
+      box-shadow: 0 0 0 2px #FFF; }
   .color-brick span {
-    font-size: 85%; }
+    display: inline-block;
+    font-size: 85%;
+    padding: .5em 1em; }
+
+.color-bar .color-brick:first-of-type {
+  border-top-left-radius: 3em;
+  border-bottom-left-radius: 3em; }
+.color-bar .color-brick:last-of-type {
+  border-top-right-radius: 3em;
+  border-bottom-right-radius: 3em; }
 
 /*# sourceMappingURL=styles.css.map */

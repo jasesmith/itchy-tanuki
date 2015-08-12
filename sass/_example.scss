@@ -21,6 +21,8 @@
         flex-wrap: wrap;
         z-index: 2;
         flex: 2;
+        background: none;
+        padding-left: 1em;
         // align-items: flex-start;
         // justify-content: flex-start;
         // border-left: .5em solid;
@@ -36,11 +38,36 @@
     justify-content: center;
     transition: .3s;
     z-index: 1;
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+    &:hover {
+        transform: scale(1.1);
+        z-index: 3;
+    }
     &.current {
         z-index: 2;
-        box-shadow: 0 0 0 .5em $light inset;
+        span {
+            background: $dark;
+            color: $light;
+            border-radius: 2em;
+            box-shadow: 0 0 0 2px $light;
+        }
     }
     span {
+        display: inline-block;
         font-size: 85%;
+        padding: .5em 1em;
+    }
+}
+.color-bar .color-brick {
+    &:first-of-type {
+        border-top-left-radius: 3em;
+        border-bottom-left-radius: 3em;
+    }
+    &:last-of-type {
+        border-top-right-radius: 3em;
+        border-bottom-right-radius: 3em;
     }
 }

@@ -8,12 +8,38 @@
 
         $scope.colorHistory = [];
 
+        $scope.useHash = false;
+
         $scope._notInRunLoop = function _notInRunLoop() {
             return !$scope.$root.$$phase;
         };
 
         var doIt = function(color){
-            color = color || utils.randomHexColor();
+            color = color ? color.toLowerCase() : utils.randomHexColor().toLowerCase();
+
+            addToColorHistory(color);
+
+            $scope.darker = _.unique([
+                color.darken(10),
+                color.darken(20),
+                color.darken(30),
+                color.darken(40),
+                color.darken(50)
+            ]);
+            $scope.lighter = _.unique([
+                color.lighten(50),
+                color.lighten(40),
+                color.lighten(30),
+                color.lighten(20),
+                color.lighten(10)
+            ]);
+
+            $scope.color = color;
+            $scope.brightness = utils.colorBrightness(color);
+
+            if($scope.useHash) {
+                window.location.hash = color.replace('#', '#/');
+            }
 
             if ($scope._notInRunLoop()) {
                 try {
@@ -22,41 +48,42 @@
                     $scope.$apply();
                 } catch(e) {}
             }
-
-            $scope.color = color;
-            window.location.hash = color.replace('#', '#/');
         };
 
         $scope.loadColor = function(color){
-            window.location.hash = color.replace('#', '#/');
+            if($scope.useHash) {
+                window.location.hash = color.toLowerCase().replace('#', '#/');
+            } else {
+                doIt(color);
+            }
         };
 
         $scope.setClasses = function(color, test){
-            var brightness = utils.colorBrightness(color);
-            var classes = [];
+            if(color) {
+                var brightness = utils.colorBrightness(color);
+                var classes = [];
 
-            var text = brightness < 145 ? 'fg-light' : 'fg-dark';
-            classes.push(text);
+                var text = brightness < 128 ? 'fg-light' : 'fg-dark';
+                classes.push(text);
 
-            if(color === test) {
-                classes.push('current');
+                if(color === test) {
+                    classes.push('current');
+                }
+
+                return classes.join(' ');
             }
-
-            return classes.join(' ');
         };
 
-        var getHashColor = function() {
-            var url, hash, color;
-
-            color = window.location.hash.replace('/', '');
-
-            if(color && (color.match('^[0-9A-Fa-f]{3}$') || color.match('^[0-9A-Fa-f]{6}$'))) {
-                color = '#' + color;
-            } else {
-                color = false;
-            }
-            doIt(color);
-        };
+        // var getHashColor = function(color) {
+        //     if(color && (color.match('^[0-9A-Fa-f]{3}$') || color.match('^[0-9A-Fa-f]{6}$'))) {
+        //         color = '#' + color;
+        //     } else {
+        //         color = false;
+        //     }
+        //     doIt(color);
+        // };
+        //
+        // getHashColor();
 
         var addToColorHistory = function(color){
             var c = _.find($scope.colorHistory, function(item){
@@ -68,13 +95,12 @@
             }
         };
 
-        getHashColor();
 
         $scope.$watch(function () {
-            return window.location.hash.replace('/', '');
+            var hash = window.location.hash;
+            return hash ? hash.replace('/', '') : '';
         }, function (color) {
             doIt(color);
-            addToColorHistory(color);
         });
 
         $(document).on('keyup', function(e){
