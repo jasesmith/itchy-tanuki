@@ -22,31 +22,31 @@
 
                 <main class="main">
                     <div class="canvas">
-                        <div class="flex-column">
-                            <div class="flex-row color-bar">
+                        <div class="color-display flex-column">
+                            <div class="color-info flex-row color-bar">
                                 <div class="color-brick" ng-repeat="c in lighter track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c)">{{c}}</div>
                             </div>
-                            <div class="color-brick flex-row flex-1">
-                                <div style="margin-right: 1em;"><fa name="refresh" size="2"></fa></div>
+                            <div class="color-info flex-row flex-1">
+                                <div style="margin-right: 1em;"><fa name="refresh" size="3"></fa></div>
                                 <h1>{{color}}</h1>
                             </div>
-                            <div class="color-brick">
+                            <div class="color-info">
                                 color brightness: {{brightness}}
                             </div>
-                            <div class="flex-row color-bar">
+                            <div class="color-info flex-row color-bar">
                                 <div class="color-brick" ng-repeat="c in darker track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c)">{{c}}</div>
                             </div>
-                            <div class="color-brick">
+                            <div class="color-info">
                                 <label><input type="checkbox" ng-model="useHash" /> update URL</label>
                             </div>
-                            <div class="color-brick">
+                            <div class="color-info">
                                 <a href="/{{color}}"><fa name="dot-circle-o" size="large"></fa> <u>{{color}}</u></a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="settings" ng-if="colorHistory.length > 1">
-                        <div class="color-brick" ng-repeat="c in colorHistory" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color)">
+                    <div class="settings" xng-if="colorHistory.length > 1">
+                        <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color)">
                             <span>{{c}}</span>
                         </div>
                     </div>

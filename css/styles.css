@@ -701,14 +701,15 @@ section .button {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 0;
-  -webkit-box-flex: 3;
-  -webkit-flex: 3;
-      -ms-flex: 3;
-          flex: 3;
+  padding: 2em 0;
+  -webkit-box-flex: 2;
+  -webkit-flex: 2 0 auto;
+      -ms-flex: 2 0 auto;
+          flex: 2 0 auto;
   z-index: 2; }
   .workspace .canvas h1 {
-    font-weight: 200; }
+    font-weight: 100;
+    font-size: 3.5em; }
 .workspace .settings {
   padding: 0;
   -webkit-box-orient: horizontal;
@@ -720,14 +721,18 @@ section .button {
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
   z-index: 2;
-  -webkit-box-flex: 2;
-  -webkit-flex: 2;
-      -ms-flex: 2;
-          flex: 2;
-  background: none;
-  padding-left: 1em; }
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  box-shadow: 0 0 0 .5em; }
 
-.color-brick {
+.color-display a {
+  text-decoration: none;
+  color: inherit; }
+
+.color-info {
+  position: relative;
   text-align: center;
   font-family: monospace;
   padding: 1em;
@@ -746,18 +751,34 @@ section .button {
   -webkit-box-pack: center;
   -webkit-justify-content: center;
       -ms-flex-pack: center;
+          justify-content: center; }
+
+.color-brick {
+  position: relative;
+  text-align: center;
+  font-family: monospace;
+  padding: 1em 0;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
           justify-content: center;
-  -webkit-transition: .3s;
-          transition: .3s;
   z-index: 1; }
-  .color-brick a {
-    text-decoration: none;
-    color: inherit; }
-  .color-brick:hover {
-    -webkit-transform: scale(1.1);
-        -ms-transform: scale(1.1);
-            transform: scale(1.1);
-    z-index: 3; }
+  .color-brick span {
+    display: inline-block;
+    font-size: 85%;
+    padding: .5em 1em; }
   .color-brick.current {
     z-index: 2; }
     .color-brick.current span {
@@ -765,16 +786,14 @@ section .button {
       color: #FFF;
       border-radius: 2em;
       box-shadow: 0 0 0 2px #FFF; }
-  .color-brick span {
-    display: inline-block;
-    font-size: 85%;
-    padding: .5em 1em; }
 
-.color-bar .color-brick:first-of-type {
-  border-top-left-radius: 3em;
-  border-bottom-left-radius: 3em; }
-.color-bar .color-brick:last-of-type {
-  border-top-right-radius: 3em;
-  border-bottom-right-radius: 3em; }
+.color-bar .color-brick {
+  padding: 1em; }
+  .color-bar .color-brick:first-of-type {
+    border-top-left-radius: 3em;
+    border-bottom-left-radius: 3em; }
+  .color-bar .color-brick:last-of-type {
+    border-top-right-radius: 3em;
+    border-bottom-right-radius: 3em; }
 
 /*# sourceMappingURL=styles.css.map */

@@ -7,11 +7,12 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        padding: 0;
-        flex:3;
+        padding: 2em 0;
+        flex:2 0 auto;
         z-index: 2;
         h1 {
-            font-weight: 200;
+            font-weight: 100;
+            font-size: 3.5em;
         }
     }
 
@@ -20,15 +21,22 @@
         flex-direction: row-reverse;
         flex-wrap: wrap;
         z-index: 2;
-        flex: 2;
-        background: none;
-        padding-left: 1em;
+        flex: 1;
+        box-shadow: 0 0 0 .5em;
+        // background: none;
         // align-items: flex-start;
         // justify-content: flex-start;
-        // border-left: .5em solid;
+        // padding-top: .5em;
     }
 }
-.color-brick {
+.color-display {
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+}
+.color-info {
+    position: relative;
     text-align: center;
     font-family: monospace;
     padding: 1em;
@@ -36,16 +44,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: .3s;
+}
+.color-brick {
+    position: relative;
+    text-align: center;
+    font-family: monospace;
+    padding: 1em 0;
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // transition: .3s;
     z-index: 1;
-    a {
-        text-decoration: none;
-        color: inherit;
+    span {
+        display: inline-block;
+        font-size: 85%;
+        padding: .5em 1em;
     }
-    &:hover {
-        transform: scale(1.1);
-        z-index: 3;
-    }
+    // &:hover {
+    //     transform: scale(1.1);
+    //     z-index: 3;
+    // }
+    // &.true {
+    //     flex: 1 0 100%;
+    // }
+    // &.false {
+    //     flex: 0 0 auto;
+    // }
     &.current {
         z-index: 2;
         span {
@@ -55,13 +80,9 @@
             box-shadow: 0 0 0 2px $light;
         }
     }
-    span {
-        display: inline-block;
-        font-size: 85%;
-        padding: .5em 1em;
-    }
 }
 .color-bar .color-brick {
+    padding: 1em;
     &:first-of-type {
         border-top-left-radius: 3em;
         border-bottom-left-radius: 3em;
