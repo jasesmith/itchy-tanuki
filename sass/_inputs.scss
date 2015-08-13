@@ -58,7 +58,7 @@ input:not(.exclude) {
             opacity: .4;
         }
         &:checked:before {
-            content: "\f00c"; // check
+            content: "\f192"; // dot-circle-o
             // color: $active;
             opacity: 1;
         }

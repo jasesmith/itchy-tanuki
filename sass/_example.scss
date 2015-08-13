@@ -1,6 +1,6 @@
 .workspace  {
     .main {
-        flex-direction: column;
+        flex-direction: column-reverse;
         font-size: 1vmax;
     }
     .canvas {
@@ -14,13 +14,12 @@
         h1 {
             font-weight: 100;
             font-size: 3.5em;
-            margin: 0 1em;
         }
     }
 
-    .settings {
+    .panel {
         padding: 0;
-        flex-direction: column-reverse;
+        flex-direction: row-reverse;
         flex-wrap: wrap;
         z-index: 2;
         flex: 1;
@@ -47,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    label + label {
+    > * + * {
         margin-left: 2em;
     }
 }
@@ -60,12 +59,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // transition: .3s;
+    transition: transform .3s;
     z-index: 1;
     span {
         display: inline-block;
         font-size: 85%;
         padding: .5em 1em;
+        // pointer-events: none;
     }
     // &:hover {
     //     transform: scale(1.1);
@@ -84,6 +84,26 @@
             color: $light;
             border-radius: 2em;
             box-shadow: 0 0 0 2px $light;
+        }
+    }
+    &.ui-sortable-helper {
+        transform: rotate(-3deg);
+        z-index: 5;
+    }
+    &.ui-sortable-placeholder,
+    &.parking-spot {
+        background: repeating-linear-gradient(
+          45deg,
+          rgba(#000, .15),
+          rgba(#000, .15) .5em,
+          transparent .5em,
+          transparent 1em
+        );
+        &::after {
+            content: '-------';
+            display: inline-block;
+            font-size: 85%;
+            padding: .5em 1em;
         }
     }
 }

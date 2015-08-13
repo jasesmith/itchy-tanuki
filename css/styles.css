@@ -14,6 +14,7 @@ body {
   display: none !important; }
 
 [ng-click] {
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   -webkit-tap-highlight-color: transparent;
   /* For some Androids */ }
@@ -381,7 +382,7 @@ html, body, .wrapper {
             flex: 1;
     padding: 6rem 2rem;
     overflow: auto; }
-  .workspace .settings {
+  .workspace .panel {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -481,7 +482,7 @@ input:not(.exclude)[type=checkbox] {
     content: "\f10c";
     opacity: .4; }
   input:not(.exclude)[type=checkbox]:checked:before {
-    content: "\f00c";
+    content: "\f192";
     opacity: 1; }
 input:not(.exclude)[type="range"] {
   padding: 0;
@@ -684,10 +685,10 @@ section .button {
 
 .workspace .main {
   -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -webkit-box-direction: reverse;
+  -webkit-flex-direction: column-reverse;
+      -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
   font-size: 1vmax; }
 .workspace .canvas {
   display: -webkit-box;
@@ -715,15 +716,14 @@ section .button {
   z-index: 2; }
   .workspace .canvas h1 {
     font-weight: 100;
-    font-size: 3.5em;
-    margin: 0 1em; }
-.workspace .settings {
+    font-size: 3.5em; }
+.workspace .panel {
   padding: 0;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: horizontal;
   -webkit-box-direction: reverse;
-  -webkit-flex-direction: column-reverse;
-      -ms-flex-direction: column-reverse;
-          flex-direction: column-reverse;
+  -webkit-flex-direction: row-reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
   -webkit-flex-wrap: wrap;
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
@@ -760,7 +760,7 @@ section .button {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center; }
-  .color-info label + label {
+  .color-info > * + * {
     margin-left: 2em; }
 
 .color-brick {
@@ -784,6 +784,8 @@ section .button {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-transition: -webkit-transform .3s;
+          transition: transform .3s;
   z-index: 1; }
   .color-brick span {
     display: inline-block;
@@ -796,6 +798,19 @@ section .button {
       color: #FFF;
       border-radius: 2em;
       box-shadow: 0 0 0 2px #FFF; }
+  .color-brick.ui-sortable-helper {
+    -webkit-transform: rotate(-3deg);
+        -ms-transform: rotate(-3deg);
+            transform: rotate(-3deg);
+    z-index: 5; }
+  .color-brick.ui-sortable-placeholder, .color-brick.parking-spot {
+    background: -webkit-repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 0.5em, transparent 0.5em, transparent 1em);
+    background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 0.5em, transparent 0.5em, transparent 1em); }
+    .color-brick.ui-sortable-placeholder::after, .color-brick.parking-spot::after {
+      content: '-------';
+      display: inline-block;
+      font-size: 85%;
+      padding: .5em 1em; }
 
 .color-bar .color-brick {
   padding: 1em; }

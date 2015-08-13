@@ -19,6 +19,7 @@
     "tests"
   ],
   "dependencies": {
-    "jamfu": "https://github.com/jasesmith/jamfu.git"
+    "jamfu": "https://github.com/jasesmith/jamfu.git",
+    "angular-ui-sortable": "~0.13.4"
   }
 }

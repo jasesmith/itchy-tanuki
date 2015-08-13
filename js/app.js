@@ -1,35 +1,64 @@
 (function($angular, _) {
     'use strict';
 
-    angular.module('app', ['jamfu']).controller('AppController', ['$scope', '$location', 'UtilityService', function($scope, $location, utils) {
+    angular.module('app', ['jamfu','ui.sortable']).controller('AppController', ['$scope', '$location', 'StorageService', 'UtilityService', function($scope, $location, storage, utils) {
 
         $scope.headline = 'Itchy Tanuki';
         $scope.icon = 'circle-o';
 
-        $scope.colorHistory = [];
-        $scope.myColors = [];
+        $scope.colorHistory = storage.get('tanuki-history') || [];
+        $scope.myColors = storage.get('tanuki-colors') || [];
+        $scope.preferences = storage.get('tanuki-preferences') || {useHash: false, showHistory: false};
 
-        $scope.useHash = false;
-        $scope.showHistory = false;
+        $scope.useHash = $scope.preferences.useHash;
+        $scope.showHistory = $scope.preferences.showHistory;
+
+        $scope.sortableOptions = {
+            placeholder: 'color-brick parking-spot',
+            tolerance: 'pointer',
+            stop: function() {
+                var list = _.map($scope.myColors, function(i){
+                    return i;
+                });
+                $scope.$apply();
+                storage.save('tanuki-colors', list);
+            }
+        };
+
 
         var _notInRunLoop = function _notInRunLoop() {
             return !$scope.$root.$$phase;
         };
 
-        var addToColorHistory = function(color){
-            var c = _.find($scope.colorHistory, function(item){
+        var addToColorHistory = function(history, color){
+            var c = _.find(history, function(item){
                 return item === color;
             });
 
             if(c !== color) {
-                $scope.colorHistory.push(color);
+                history.push(color);
             }
+
+            $scope.colorHistory = _.last(history, 90);
+            storage.save('tanuki-history', $scope.colorHistory);
+        };
+
+        $scope.clearColorHistory = function(){
+            $scope.colorHistory = [];
+            // $scope.colorHistory.push($scope.color);
+            storage.save('tanuki-history', $scope.colorHistory);
+        };
+
+        $scope.clearSavedColors = function(){
+            $scope.myColors = [];
+            // $scope.colorHistory.push($scope.color);
+            storage.save('tanuki-colors', $scope.myColors);
         };
 
         var doIt = function(color){
             color = color ? color.toLowerCase() : utils.randomHexColor().toLowerCase();
 
-            addToColorHistory(color);
+            addToColorHistory($scope.colorHistory, color);
 
             $scope.darker = _.unique([
                 color.darken(10),
@@ -49,7 +78,7 @@
             $scope.color = color;
             $scope.brightness = utils.colorBrightness(color);
 
-            if($scope.useHash) {
+            if($scope.preferences.useHash) {
                 window.location.hash = color.replace('#', '#/');
             }
 
@@ -76,6 +105,11 @@
             } else {
                 $scope.myColors.push(color);
             }
+
+            // $scope.myColors = _.last($scope.myColors, 9);
+
+            storage.save('tanuki-colors', $scope.myColors);
+
         };
 
         $scope.isSaved = function(color){
@@ -85,7 +119,7 @@
         };
 
         $scope.loadColor = function(color){
-            if($scope.useHash) {
+            if($scope.preferences.useHash) {
                 window.location.hash = color.toLowerCase().replace('#', '#/');
             } else {
                 doIt(color);
@@ -97,7 +131,7 @@
                 var brightness = utils.colorBrightness(color);
                 var classes = [];
 
-                var text = brightness < 128 ? 'fg-light' : 'fg-dark';
+                var text = brightness < 125 ? 'fg-light' : 'fg-dark';
                 classes.push(text);
 
                 if(color === test) {
@@ -127,8 +161,18 @@
             doIt(color);
         });
 
+        $scope.$watch('useHash', function (value) {
+            $scope.preferences.useHash = value;
+            storage.save('tanuki-preferences', $scope.preferences);
+        });
+
+        $scope.$watch('showHistory', function (value) {
+            $scope.preferences.showHistory = value;
+            storage.save('tanuki-preferences', $scope.preferences);
+        });
+
         $(document).on('keyup', function(e){
-            if(e.keyCode == 32){
+            if(e.keyCode === 32){
                 doIt();
             }
         });
