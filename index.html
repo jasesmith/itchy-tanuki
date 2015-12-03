@@ -24,9 +24,9 @@
 
             <div class="workspace">
 
-                <main class="main">
+                <main class="main" ng-class="{'always-show-hex': alwaysShowHex}">
 
-                    <div class="panel favorites" ui-sortable="sortableOptions" ng-model="myColors" ng-class="{'always-show-hex': alwaysShowHex}">
+                    <div class="panel favorites" ui-sortable="sortableOptions" ng-model="myColors">
                       <div class="color-brick {{$last}}" ng-repeat="c in myColors" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
                         <span class="hex-font">{{c}}</span>
                       </div>
@@ -39,20 +39,20 @@
 
                     <div class="canvas" ng-class="{'active':!showMenu}" ng-style="{'background': color}">
 
-                      <div class="color-ring-outer">
-                        <div class="color-ring" ng-style="setRingRotation()">
-                          <div ng-repeat="c in alternates track by $index" ng-style="setRotation($index)">
-                            <div class="color-brick xui-fun" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, false)">
-                              <span class="hex-font" ng-if="!$last">{{c}}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
                       <div ng-click="saveColor(color)"><fa name="{{(isSaved(color) ? 'heart':'heart-o')}}" size="5" fw></fa></div>
 
                       <div class="color-display flex-column">
 
+                        <div class="color-ring-outer">
+                          <div class="color-ring" ng-style="setRingRotation()">
+                            <div ng-repeat="c in alternates track by $index" ng-style="setRotation($index)">
+                              <div class="color-brick xui-fun" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, false)">
+                                <span class="hex-font" ng-if="!$last">{{c}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
                         <div class="flex-row color-bar">
                           <div class="color-brick ui-fun" ng-repeat="c in lighter track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, null, true)">

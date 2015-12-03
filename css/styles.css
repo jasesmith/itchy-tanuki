@@ -915,10 +915,10 @@ section .button {
       position: absolute;
       top: 1em;
       right: 1em;
-      width: 1.5em;
+      width: .5em;
       height: .5em;
       line-height: 0;
-      border-radius: 1em;
+      border-radius: 100%;
       background: #FFF;
       box-shadow: 0 0 0 2px #363639; }
     .color-ring .color-brick.current span {
@@ -1027,9 +1027,9 @@ section .button {
       font-size: 85%;
       padding: .5em 1em; }
 
-.panel:not(.always-show-hex) .color-brick span {
+.main:not(.always-show-hex) .color-brick span {
   font-size: 0; }
-.panel:not(.always-show-hex) .color-brick:hover span {
+.main:not(.always-show-hex) .color-brick:hover span {
   font-size: 1em; }
 
 .workspace .controls.top > div span {
