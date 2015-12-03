@@ -128,16 +128,16 @@
             // Chromatic data...
             s = d / ( l < 0.5 ? ( max + min ) : ( 2 - max - min ));
 
-            var del_R = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
-            var del_G = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
-            var del_B = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
+            var delR = ( ( ( max - r ) / 6 ) + ( d / 2 ) ) / d;
+            var delG = ( ( ( max - g ) / 6 ) + ( d / 2 ) ) / d;
+            var delB = ( ( ( max - b ) / 6 ) + ( d / 2 ) ) / d;
 
             if (r === max) {
-                h = del_B - del_G;
+                h = delB - delG;
             } else if (g === max) {
-                h = ( 1 / 3 ) + del_R - del_B;
+                h = ( 1 / 3 ) + delR - delB;
             } else if (b === max) {
-                h = ( 2 / 3 ) + del_G - del_R;
+                h = ( 2 / 3 ) + delG - delR;
             }
 
             if (h < 0) {
@@ -189,12 +189,12 @@
                 g = l * 255;
                 b = l * 255;
             } else {
-                var var_2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
-                var var_1 = 2 * l - var_2;
+                var v2 = (l < 0.5) ? l * ( 1 + s ) : (( l + s ) - ( s * l ));
+                var v1 = 2 * l - v2;
 
-                r = 255 * h2rgb(var_1, var_2, h + ( 1 / 3 ));
-                g = 255 * h2rgb(var_1, var_2, h);
-                b = 255 * h2rgb(var_1, var_2, h - ( 1 / 3 ));
+                r = 255 * h2rgb(v1, v2, h + ( 1 / 3 ));
+                g = 255 * h2rgb(v1, v2, h);
+                b = 255 * h2rgb(v1, v2, h - ( 1 / 3 ));
             }
             return [r,g,b];
         };

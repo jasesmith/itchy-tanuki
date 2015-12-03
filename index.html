@@ -1,68 +1,103 @@
 <!DOCTYPE html>
 <html ng-app="app" ng-controller="AppController">
     <head>
-        <title>{{color}} • {{headline}}</title>
+        <title>{{color}} &bull; {{headline}}</title>
         <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" media="screen" charset="utf-8" />
         <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8" />
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="js/jquery-ui-custom.min.js"></script>
         <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/hammerjs/hammer.min.js"></script>
         <script src="bower_components/angular-ui-sortable/sortable.min.js"></script>
-        <script src="bower_components/moment/min/moment.min.js"></script>
+        <!-- <script src="bower_components/moment/min/moment.min.js"></script> -->
         <script src="bower_components/underscore/underscore-min.js"></script>
-        <script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script>
+        <!-- <script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js"></script> -->
         <script src="bower_components/jamfu/jamfu.js"></script>
 
         <script src="js/colors.js"></script>
         <script src="js/app.js"></script>
+        <script src="js/shade-ring.js"></script>
     </head>
     <body class="">
 
-        <div class="wrapper" ng-cloak ng-style="{'background': color}" ng-class="setClasses(color)">
+        <div class="wrapper" ng-cloak ng-style="{'background': color}" ng-class="setClasses(color, null, true)">
 
             <div class="workspace">
 
                 <main class="main">
-                    <div class="panel favorites" ng-if="myColors.length" ui-sortable="sortableOptions" ng-model="myColors">
-                        <div class="color-brick {{$last}}" ng-repeat="c in myColors" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color)">
-                            <span>{{c}}</span>
+
+                    <div class="panel favorites" ui-sortable="sortableOptions" ng-model="myColors" ng-class="{'always-show-hex': alwaysShowHex}">
+                      <div class="color-brick {{$last}}" ng-repeat="c in myColors" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
+                        <span class="hex-font">{{c}}</span>
+                      </div>
+                    </div>
+
+                    <div class="controls top favorites hex-font">
+                      <div>{{headline}}</div>
+                      <div ng-click="showMenu = !showMenu"><fa name="ellipsis-v" size="large" fw></fa> <span><b>Menu</b></span></div>
+                    </div>
+
+                    <div class="canvas" ng-class="{'active':!showMenu}" ng-style="{'background': color}">
+
+                      <div class="color-ring-outer">
+                        <div class="color-ring" ng-style="setRingRotation()">
+                          <div ng-repeat="c in alternates track by $index" ng-style="setRotation($index)">
+                            <div class="color-brick xui-fun" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, false)">
+                              <span class="hex-font" ng-if="!$last">{{c}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div ng-click="saveColor(color)"><fa name="{{(isSaved(color) ? 'heart':'heart-o')}}" size="5" fw></fa></div>
+
+                      <div class="color-display flex-column">
+
+
+                        <div class="flex-row color-bar">
+                          <div class="color-brick ui-fun" ng-repeat="c in lighter track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, null, true)">
+                            <!-- {{c}} -->
+                          </div>
+                        </div>
+
+                        <div class="color-info flex-column flex-1 hex-font" ng-style="{'background': color}">
+                          <h1><a href="/{{color}}">{{color}}</a></h1>
+                          <h2><fa name="sun-o" size="large" fw></fa>{{brightness}}</h2>
+                        </div>
+
+                        <div class="flex-row color-bar">
+                          <div class="color-brick ui-fun" ng-repeat="c in darker track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, null, true)">
+                            <!-- {{c}} -->
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div ng-click="doIt()"><fa name="refresh" size="5" fw></fa></div>
+
+                      <div class="menu" ng-class="{'active':showMenu}">
+                        <div ng-click="alwaysShowHex = !alwaysShowHex"><fa name="hashtag" size="large" fw></fa> {{(alwaysShowHex?'Hide':'Show')}} HEX codes</div>
+                        <div ng-click="showHistory = !showHistory"><fa name="barcode" size="large" fw></fa> {{(showHistory?'Hide':'Show')}} History</div>
+                        <div ng-click="clearColorHistory()"><fa name="undo" size="large" fw ng-class="{'ghost': !colorHistory.length}"></fa> Clear History</div>
+                        <div ng-click="shareColors()"><fa name="send" size="large" fw></fa> Export Favorites</div>
+                        <div ng-click="clearSavedColors()"><fa name="trash" size="large" fw></fa> Reset Favorites</div>
+                        <div><a href="https://github.com/jasesmith/itchy-tanuki"><fa name="github" size="large" fw></fa> View on GitHub</a></div>
+                        <!-- <div class="ui-fun" ng-click="useHash = !useHash"><fa name="hashtag" size="large" fw ng-class="{'ghost': !useHash}"></fa> <span><b>Use URLs</b></span></div> -->
+                      </div>
+                    </div>
+
+
+                    <div class="controls bottom history">
+                      <div class="xui-fun" ng-click="showHistory = !showHistory"><fa name="{{(showHistory?'chevron-down':'chevron-up')}}" size="large" fw ng-class="{'ghost': !showHistory}"></fa> <span><b>{{(showHistory?'Hide':'Show')}}</b></span> History</div>
+                      <!-- <div class="ui-fun" ng-click="clearColorHistory()"><fa name="undo" size="large" fw ng-class="{'ghost': !colorHistory.length}"></fa> <span><b>Clear History</b></span></div> -->
+                    </div>
+
+                    <div class="panel history" ng-if="preferences.showHistory" ng-class="{'always-show-hex': alwaysShowHex}">
+                        <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
+                          <span class="hex-font">{{c}}</span>
                         </div>
                     </div>
 
-                    <div class="canvas">
-                        <div class="color-display flex-column">
-                            <div class="xcolor-info flex-row color-bar">
-                                <div class="color-brick" ng-repeat="c in lighter track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c)">{{c}}</div>
-                            </div>
-                            <div class="color-info flex-row flex-1">
-                                <h1>{{color}}</h1>
-                                <div ng-click="doIt()"><fa name="refresh" size="3"></fa></div>
-                                <div ng-click="saveColor(color)"><i class="fa fa-3x" ng-class="{'fa-star': isSaved(color), 'fa-star-o': !isSaved(color)}"></i></div>
-                            </div>
-                            <div class="color-info">
-                                <a href="/{{color}}"><u>{{color}}</u></a>
-                                <span>color brightness: {{brightness}}</span>
-                            </div>
-                            <div class="xcolor-info flex-row color-bar">
-                                <div class="color-brick" ng-repeat="c in darker track by $index" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c)">{{c}}</div>
-                            </div>
-                            <div class="color-info">
-                                <span ng-click="useHash = !useHash">update URL</span>
-                                <span ng-click="showHistory = !showHistory">{{(showHistory ? 'hide' : 'show')}} history</span>
-                                <span ng-click="clearColorHistory()">clear history</span>
-                                <span ng-click="clearSavedColors()">reset saved</span>
-                            </div>
-                            <div class="color-info">
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="panel history" ng-if="preferences.showHistory">
-                        <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color)">
-                            <span>{{c}}</span>
-                        </div>
-                    </div>
                 </main>
 
             </div>
