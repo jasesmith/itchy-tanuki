@@ -150,10 +150,12 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     transition: transform .3s $timing-func;
     // background: inherit; //rgba($light, 1);
     // color: inherit; //$dark;
-    background: rgba(#000, .5);
+    background: rgba(#000, .35);
     color: $light;
-    backdrop-filter: blur(1em);
+    backdrop-filter: blur(.5em);
     > div {
+      position: relative;
+      z-index: 1;
       flex: 0 0 calc(100%/3);
       display: flex;
       font-size: .8em;
@@ -164,6 +166,8 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
       justify-content: center;
       &:hover {
         background: rgba($light, .1);
+        backdrop-filter: blur(.5em);
+        z-index: 2;
       }
     }
   }
@@ -181,9 +185,9 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     max-width: 15em;
     transform: translate(0, -101%);
     transition: transform .3s $timing-func;
-    background: rgba(#000, .5);
+    background: rgba(#000, .35);
     color: $light;
-    backdrop-filter: blur(1em);
+    backdrop-filter: blur(.5em);
     padding: 1em;
     > div {
       padding: 1em;
@@ -235,7 +239,7 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     justify-content: space-between;
     align-items: center;
     > div {
-      padding: .5em;
+      padding: 1em;
       position: relative;
       display: flex;
       align-items: center;
@@ -340,8 +344,9 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
 .color-brick {
   position: relative;
   text-align: center;
+  line-height: 1;
   font-size: 1.5vmax;
-  padding: 1em 0;
+  padding: .5em;
   flex: 1 0 auto;
   display: flex;
   align-items: center;

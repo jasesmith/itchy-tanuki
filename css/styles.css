@@ -845,11 +845,13 @@ section .button {
   transition: -webkit-transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
   transition: transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
   transition: transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6), -webkit-transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.35);
   color: #FFF;
-  -webkit-backdrop-filter: blur(1em);
-          backdrop-filter: blur(1em); }
+  -webkit-backdrop-filter: blur(0.5em);
+          backdrop-filter: blur(0.5em); }
   .workspace .menu > div {
+    position: relative;
+    z-index: 1;
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 calc(100%/3);
         -ms-flex: 0 0 calc(100%/3);
@@ -875,7 +877,10 @@ section .button {
         -ms-flex-pack: center;
             justify-content: center; }
     .workspace .menu > div:hover {
-      background: rgba(255, 255, 255, 0.1); }
+      background: rgba(255, 255, 255, 0.1);
+      -webkit-backdrop-filter: blur(0.5em);
+              backdrop-filter: blur(0.5em);
+      z-index: 2; }
 .workspace .sliders {
   display: -webkit-box;
   display: -webkit-flex;
@@ -901,10 +906,10 @@ section .button {
   transition: -webkit-transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
   transition: transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
   transition: transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6), -webkit-transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.35);
   color: #FFF;
-  -webkit-backdrop-filter: blur(1em);
-          backdrop-filter: blur(1em);
+  -webkit-backdrop-filter: blur(0.5em);
+          backdrop-filter: blur(0.5em);
   padding: 1em; }
   .workspace .sliders > div {
     padding: 1em; }
@@ -974,7 +979,7 @@ section .button {
       -ms-flex-align: center;
           align-items: center; }
   .workspace .controls > div {
-    padding: .5em;
+    padding: 1em;
     position: relative;
     display: -webkit-box;
     display: -webkit-flex;
@@ -1118,8 +1123,9 @@ section .button {
 .color-brick {
   position: relative;
   text-align: center;
+  line-height: 1;
   font-size: 1.5vmax;
-  padding: 1em 0;
+  padding: .5em;
   -webkit-box-flex: 1;
   -webkit-flex: 1 0 auto;
       -ms-flex: 1 0 auto;

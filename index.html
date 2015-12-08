@@ -34,10 +34,10 @@
 
                     <div class="controls top hex-font">
                       <div class="flex-1" ng-class="{'bg-dark': showMenu}">
-                        <b ng-click="showMenu = !showMenu"><fa name="bars" fw></fa> {{headline}}</b>
+                        <b ng-click="showMenu = !showMenu"><fa name="circle" size="large" fw></fa> {{headline}}</b>
                       </div>
-                      <div ng-class="{'bg-dark': tanukiMode}" ng-click="tanukiMode = !tanukiMode"><fa name="{{(tanukiMode?'spinner':'sun-o')}}" fw></fa></div>
-                      <div ng-class="{'bg-dark': showSliders}" ng-click="showSliders = !showSliders && !showMenu"><fa name="sliders" fw></fa></div>
+                      <div ng-class="{'bg-dark': tanukiMode}" ng-click="tanukiMode = !tanukiMode"><fa name="{{(tanukiMode?'spinner':'sun-o')}}" size="large" fw></fa></div>
+                      <div ng-class="{'bg-dark': showSliders}" ng-click="showSliders = !showSliders && !showMenu"><fa name="sliders" size="large" fw></fa></div>
                     </div>
 
                     <div class="canvas" ng-style="{'background-color': color}">
