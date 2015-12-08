@@ -20,8 +20,13 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     &.slidersActive .sliders {
       transform: translate(0, 0);
     }
-    &.menuActive .menu {
-      transform: translate(0, 0);
+    &.menuActive {
+      .controls.top b {
+        flex: 1;
+      }
+      .menu {
+        transform: translate(0, 0);
+      }
     }
     &:not(.tanuki-mode) {
       .color-info {
@@ -67,10 +72,8 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
               color: inherit;
             }
           }
-          &.flip-my-hex {
-            .color-brick span {
-              transform: translateX(-50%) rotate(180deg);
-            }
+          &.flip-my-hex .color-brick span {
+            transform: translateX(-50%) rotate(180deg);
           }
           &:nth-last-child(-n+2) {
             transition: none;
@@ -90,6 +93,9 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
       }
     }
     &.tanuki-mode {
+      .history {
+        background: #000;
+      }
       .color-info {
         margin: -10vmin 0 0 0;
         width: 40vmin;
@@ -191,12 +197,10 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     position: absolute;
     bottom: 1em;
     right: 1em;
-    // left: 50%;
-    // transform: translateX(-50%);
     background: $dark;
     color: $light;
   	border-radius: 100%;
-  	padding: 1.5em;
+  	padding: 2em;
     .fa {
       position: absolute;
       top: 50%;
@@ -257,7 +261,6 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   transition: transform .3s $timing-func;
   &:hover {
     transform: scale(1.5);
-    text-shadow: 0 .1em 0 $dark;
   }
   &:active {
     transform: scale(1);
@@ -266,7 +269,6 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
 .color-display {
   align-items: center;
   position: relative;
-  // margin: 10em;
   a {
     text-decoration: none;
     color: inherit;
@@ -342,7 +344,6 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform .3s ease-out;
   z-index: 1;
   span {
     display: inline-block;
@@ -351,12 +352,6 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     flex: 0 0 auto;
     border-radius: 2em;
   }
-  // &.true {
-  //   flex: 1 0 100%;
-  // }
-  // &.false {
-  //   flex: 0 0 auto;
-  // }
   &.current {
     z-index: 2;
     span {
@@ -426,33 +421,26 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   }
   // SLIDERS
   input[type="range"] {
-      padding: 0;
-      border: 0;
-      vertical-align: middle;
-      position: relative;
-      width: 100%;
-      border-radius: .2em;
-      height: .5em;
-      margin: 1em 0;
-      background: $light; //rgba($dark, .3);
+    padding: 0;
+    border: 0;
+    vertical-align: middle;
+    position: relative;
+    width: 100%;
+    border-radius: .2em;
+    height: .5em;
+    margin: 1em 0;
+    background: $light; //rgba($dark, .3);
 
-      &::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 1em;
-          height: 1em;
-          transform: scale(1.25, 1.25);
-          border: none;
-          border-radius: 100%;
-          box-shadow: 0 0 1em 0;
-          // box-shadow: 0 0 0 1px $dark inset, 0px 2px 2px 0px rgba(#000, .13);
-          background: $light;
-      }
-      // &:focus,
-      // &:active {
-      //     &::-webkit-slider-thumb {
-      //         box-shadow: 0 0 1em 0;
-      //     }
-      // }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 1em;
+      height: 1em;
+      transform: scale(1.25, 1.25);
+      border: none;
+      border-radius: 100%;
+      box-shadow: 0 0 1em 0;
+      background: $light;
+    }
   }
 }
 

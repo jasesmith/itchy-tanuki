@@ -711,6 +711,11 @@ section .button {
     -webkit-transform: translate(0, 0);
         -ms-transform: translate(0, 0);
             transform: translate(0, 0); }
+  .workspace .main.menuActive .controls.top b {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1; }
   .workspace .main.menuActive .menu {
     -webkit-transform: translate(0, 0);
         -ms-transform: translate(0, 0);
@@ -771,6 +776,8 @@ section .button {
       box-shadow: 0.7em 1em 1.5em -1em rgba(0, 0, 0, 0.65); }
       .workspace .main:not(.tanuki-mode) .color-ring > div:last-child .color-brick::after {
         left: 0; }
+  .workspace .main.tanuki-mode .history {
+    background: #000; }
   .workspace .main.tanuki-mode .color-info {
     margin: -10vmin 0 0 0;
     width: 40vmin;
@@ -910,7 +917,7 @@ section .button {
   background: #363639;
   color: #FFF;
   border-radius: 100%;
-  padding: 1.5em; }
+  padding: 2em; }
   .workspace .history .fa {
     position: absolute;
     top: 50%;
@@ -998,8 +1005,7 @@ section .button {
   .ui-fun:hover {
     -webkit-transform: scale(1.5);
         -ms-transform: scale(1.5);
-            transform: scale(1.5);
-    text-shadow: 0 0.1em 0 #363639; }
+            transform: scale(1.5); }
   .ui-fun:active {
     -webkit-transform: scale(1);
         -ms-transform: scale(1);
@@ -1128,10 +1134,6 @@ section .button {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  -webkit-transition: -webkit-transform .3s ease-out;
-  transition: -webkit-transform .3s ease-out;
-  transition: transform .3s ease-out;
-  transition: transform .3s ease-out, -webkit-transform .3s ease-out;
   z-index: 1; }
   .color-brick span {
     display: inline-block;

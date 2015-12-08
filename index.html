@@ -27,7 +27,7 @@
                 <main class="main" ng-class="{'always-show-hex': alwaysShowHex, 'tanuki-mode': tanukiMode, 'menuActive':showMenu, 'slidersActive':showSliders}">
 
                     <div class="panel top" ui-sortable="sortableOptions" ng-model="myColors">
-                      <div class="color-brick {{$last}}" ng-repeat="c in myColors" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
+                      <div class="color-brick" ng-repeat="c in myColors" ng-class="setClasses(c, color, true)" ng-style="{'background': c}" ng-click="loadColor(c)">
                         <span class="hex-font">{{c}}</span>
                       </div>
                     </div>
