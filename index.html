@@ -24,7 +24,7 @@
 
             <div class="workspace">
 
-                <main class="main" ng-class="{'always-show-hex': alwaysShowHex}">
+                <main class="main" ng-class="{'always-show-hex': alwaysShowHex, 'tanuki-mode': tanukiMode, 'menuActive':showMenu, 'slidersActive':showSliders}">
 
                     <div class="panel top" ui-sortable="sortableOptions" ng-model="myColors">
                       <div class="color-brick {{$last}}" ng-repeat="c in myColors" ng-click="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
@@ -34,13 +34,13 @@
 
                     <div class="controls top hex-font">
                       <div class="flex-1" ng-class="{'bg-dark': showMenu}">
-                        <b ng-click="showMenu = !showMenu"><fa name="bars" size="large" fw></fa> {{headline}}</b>
+                        <b ng-click="showMenu = !showMenu"><fa name="bars" fw></fa> {{headline}}</b>
                       </div>
-                      <div ng-class="{'bg-dark': tanukiMode}" ng-click="tanukiMode = !tanukiMode"><fa name="{{(tanukiMode?'spinner':'sun-o')}}" size="large" fw></fa></div>
-                      <div ng-class="{'bg-dark': showSliders}" ng-click="showSliders = !showSliders && !showMenu"><fa name="sliders" size="large" fw></fa></div>
+                      <div ng-class="{'bg-dark': tanukiMode}" ng-click="tanukiMode = !tanukiMode"><fa name="{{(tanukiMode?'spinner':'sun-o')}}" fw></fa></div>
+                      <div ng-class="{'bg-dark': showSliders}" ng-click="showSliders = !showSliders && !showMenu"><fa name="sliders" fw></fa></div>
                     </div>
 
-                    <div class="canvas" ng-class="{'tanuki-mode': tanukiMode, 'menuActive':showMenu, 'slidersActive':showSliders}" ng-style="{'background-color': color}">
+                    <div class="canvas" ng-style="{'background-color': color}">
 
                       <div class="color-display flex-column">
 
@@ -55,28 +55,30 @@
                         </div>
 
                         <div class="color-info flex-column flex-1 hex-font" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}">
+                          <div ng-click="saveColor(tuner.hex)"><fa name="{{(isSaved(tuner.hex) ? 'heart':'heart-o')}}" size="2" fw></fa></div>
                           <h1><a href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
-                          <div ng-click="saveColor(color)"><fa name="{{(isSaved(color) ? 'heart':'heart-o')}}" size="5" fw></fa></div>
+                          <div class="refresh" ng-click="doIt()"><fa name="refresh" size="2" fw></fa></div>
                         </div>
 
                       </div>
 
-                      <div class="refresh" ng-click="doIt()"><fa name="refresh" size="5" fw></fa></div>
 
                       <div class="history" ng-class="{'ghost': !showHistory}" ng-click="showHistory = !showHistory"><fa name="history" size="2" fw></fa></div>
 
-                      <div class="sliders" ng-style="{'background': alternates[alternates.length-5]}">
-                        <div><span class="ghost">Brightness</span> {{tuner.brightness}}</div>
-                        <div class="flex-1">
+                      <div class="sliders" xng-style="{'background': alternates[alternates.length-5]}">
+                        <div>
                           <label><span class="ghost">Red</span> {{tuner.r}} <br /><input type="range" ng-model="tuner.r" min="0" max="255" /></label>
                           <label><span class="ghost">Green</span> {{tuner.g}} <br /><input type="range" ng-model="tuner.g" min="0" max="255" /></label>
                           <label><span class="ghost">Blue</span> {{tuner.b}} <br /><input type="range" ng-model="tuner.b" min="0" max="255" /></label>
                         </div>
-                        <div class="bg-dark" ng-class="{'ghost': tuner.hex === color}" ng-click="setNewColor(tuner)">
-                          <fa name="check-circle" size="large" fw></fa> Update
-                        </div>
-                        <div class="color-brick" ng-click="loadColor(color)" ng-style="{'background': color}" ng-class="setClasses(color, null, true)">
-                          reset
+                        <div><span class="ghost">Brightness</span> {{tuner.brightness}}</div>
+                        <div class="flex-row button-bar">
+                          <div class="flex-1 bg-dark" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'padding':'1em','background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}" ng-click="setNewColor(tuner)">
+                            <fa name="check-circle" size="large" fw></fa>
+                          </div>
+                          <div class="flex-1" ng-class="setClasses(color, null, true)" ng-style="{'padding':'1em','background': color}" ng-click="loadColor(color)">
+                            <fa name="undo" size="large" fw ng-class="{'ghost': tuner.hex === color}"></fa>
+                          </div>
                         </div>
                       </div>
 
@@ -85,31 +87,31 @@
                           <label>less <input type="checkbox" class="toggle" ng-model="moreSteps" /> more</label>
                           <div>Shade Steps  {{colorSteps}}</div>
                         </div> -->
-                        <div ng-click="tanukiMode = !tanukiMode">
+                        <div class="ui-fun" ng-click="tanukiMode = !tanukiMode">
                           <fa name="{{(tanukiMode?'spinner':'sun-o')}}" size="2" fw></fa>
                           <div>Tanuki Mode</div>
                         </div>
-                        <div ng-click="alwaysShowHex = !alwaysShowHex">
+                        <div class="ui-fun" ng-click="alwaysShowHex = !alwaysShowHex">
                           <fa name="hashtag" size="2" fw></fa>
                           <div>{{(alwaysShowHex?'Hide':'Show')}} HEX codes</div>
                         </div>
-                        <div ng-click="showHistory = !showHistory">
-                          <fa name="barcode" size="2" fw></fa>
+                        <div class="ui-fun" ng-click="showHistory = !showHistory">
+                          <fa name="history" size="2" fw></fa>
                           <div>{{(showHistory?'Hide':'Show')}} History</div>
                         </div>
-                        <div ng-click="clearColorHistory()">
+                        <div class="ui-fun" ng-click="clearColorHistory()">
                           <fa name="undo" size="2" fw ng-class="{'ghost': !colorHistory.length}"></fa>
                           <div>Clear History</div>
                         </div>
-                        <div ng-click="shareColors()">
+                        <div class="ui-fun" ng-click="shareColors()">
                           <fa name="send" size="2" fw></fa>
                           <div>Export Favorites</div>
                         </div>
-                        <div ng-click="clearSavedColors()">
+                        <div class="ui-fun" ng-click="clearSavedColors()">
                           <fa name="trash" size="2" fw></fa>
                           <div>Reset Favorites</div>
                         </div>
-                        <div ng-click="window.location='https://github.com/jasesmith/itchy-tanuki'">
+                        <div class="ui-fun" ng-click="window.location='https://github.com/jasesmith/itchy-tanuki'">
                           <fa name="github" size="2" fw></fa>
                           <div>View on GitHub</div>
                         </div>

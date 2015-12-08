@@ -182,7 +182,7 @@
           var s = '';
 
           if($scope.tanukiMode) {
-            var n = (1 * ((index/1.5) * 0.01) - (index/1.5));
+            var n = -(Math.E * (Math.ceil(index/2) * 0.01) - Math.ceil(index/2));
             s = ' scale3d('+ n +', '+ n +', 1)';
           }
 
