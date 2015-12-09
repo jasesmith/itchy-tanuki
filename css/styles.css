@@ -689,8 +689,8 @@ section .button {
   display: none !important; }
 
 .wrapper {
-  -webkit-transition: all .3s ease-out;
-  transition: all .3s ease-out; }
+  -webkit-transition: all 1s ease-out;
+  transition: all 1s ease-out; }
 
 .workspace .main {
   -webkit-box-orient: vertical;
@@ -742,12 +742,11 @@ section .button {
       -webkit-transform: translateX(-50%);
           -ms-transform: translateX(-50%);
               transform: translateX(-50%);
-      width: .5em;
-      height: .5em;
+      width: 1em;
+      height: 1em;
       line-height: 0;
-      border-radius: 100%;
-      background: #FFF;
-      box-shadow: 0 0 0 2px #363639; }
+      border-radius: 1em;
+      background: currentColor; }
     .workspace .main:not(.tanuki-mode) .color-ring > div .color-brick.current span {
       background: none;
       color: inherit; }
@@ -791,11 +790,6 @@ section .button {
     .workspace .main.tanuki-mode .color-ring > div .color-brick {
       border-radius: 0 20% 50% 100%;
       box-shadow: -1em 0 0 -.9em #000, 1em 0 0 .8em #000; }
-      .workspace .main.tanuki-mode .color-ring > div .color-brick.current::after {
-        left: 30%;
-        top: 80%;
-        width: 1em;
-        height: 1em; }
 .workspace .canvas {
   overflow: hidden;
   position: relative;
@@ -1165,8 +1159,8 @@ section .button {
     box-shadow: 0 0.5em 1em -0.35em rgba(0, 0, 0, 0.65);
     z-index: 50; }
   .color-brick.ui-sortable-placeholder, .color-brick.parking-spot {
-    background: -webkit-repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 0.5em, transparent 0.5em, transparent 1em);
-    background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 0.5em, transparent 0.5em, transparent 1em); }
+    background: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) 0.5em, transparent 0.5em, transparent 1em);
+    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) 0.5em, transparent 0.5em, transparent 1em); }
     .color-brick.ui-sortable-placeholder::after, .color-brick.parking-spot::after {
       content: '-------';
       display: inline-block;

@@ -175,19 +175,20 @@
         };
 
         $scope.setRotation = function(index){
-          var deg = $scope.deg*(index+1);
+          var i = index+1;
+          var deg = $scope.deg*(i);
           var mar = '0 -'+$scope.size+'em';
-          var z = $scope.tanukiMode?index:$scope.alternates.length - index;
-          var d = (index*0.08) + 's';
+          var z = $scope.tanukiMode?i:$scope.alternates.length - i;
+          var d = (i*0.08) + 's';
           var s = '';
 
           if($scope.tanukiMode) {
-            var n = -(Math.E * (Math.ceil(index/2) * 0.01) - Math.ceil(index/2));
+            var n = -(Math.E * (Math.ceil(i/2) * 0.01) - Math.ceil(i/2));
             s = ' scale3d('+ n +', '+ n +', 1)';
           }
 
           // hackery
-          if(!$scope.tanukiMode && index + 1 === $scope.alternates.length) {
+          if(!$scope.tanukiMode && i === $scope.alternates.length) {
             deg = 360; //$scope.deg;
             mar = '0 -'+$scope.size+'em 0 0';
             z = $scope.alternates.length;

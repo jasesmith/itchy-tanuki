@@ -1,7 +1,7 @@
 $timing-func: cubic-bezier(.85,-1,.15,1.6);
 
 .wrapper {
-  transition: all .3s ease-out;
+  transition: all 1s ease-out;
 }
 .workspace  {
   .main {
@@ -52,12 +52,11 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
                 top: 1em;
                 left: 50%;
                 transform: translateX(-50%);
-                width: .5em;
-                height: .5em;
+                width: 1em;
+                height: 1em;
                 line-height: 0;
-                border-radius: 100%;
-                background: $light;
-                box-shadow: 0 0 0 2px $dark;
+                border-radius: 1em;
+                background: currentColor;
               }
               span {
                 background: none;
@@ -111,14 +110,14 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
           .color-brick {
             border-radius: 0 20% 50% 100%;
             box-shadow: -1em 0 0 -.9em #000, 1em 0 0 .8em #000;
-            &.current {
-              &::after {
-                left: 30%;
-                top: 80%;
-                width: 1em;
-                height: 1em;
-              }
-            }
+            // &.current {
+            //   &::after {
+            //     left: 30%;
+            //     top: 80%;
+            //     width: 1em;
+            //     height: 1em;
+            //   }
+            // }
           }
         }
       }
@@ -375,8 +374,8 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   &.parking-spot {
     background: repeating-linear-gradient(
       45deg,
-      rgba(#000, .15),
-      rgba(#000, .15) .5em,
+      rgba(#FFF, .5),
+      rgba(#FFF, .5) .5em,
       transparent .5em,
       transparent 1em
     );
@@ -436,7 +435,7 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     border-radius: .2em;
     height: .5em;
     margin: 1em 0;
-    background: $light; //rgba($dark, .3);
+    background: $light;
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
