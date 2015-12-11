@@ -19,12 +19,59 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   margin-top: -.25em;
 }
 
+html, body, .wrapper {
+    overflow: hidden;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.flex-row-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+.flex-0 {
+  flex: 0 0 0px !important;
+}
+.flex-1 {
+    flex: 1;
+}
+
 .wrapper {
+  display: flex;
+  flex-direction: row;
   transition: all 1s ease-out;
 }
+
 .workspace  {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  position: relative;
+  z-index: 1;
   .main {
+    display: flex;
     flex-direction: column;
+    flex: 1;
+    position: relative;
+    z-index: 1;
     font-size: 1.2vmin;
     font-family: "DIN Alternate", monospace;
     h1 {
@@ -55,16 +102,15 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 0;
     z-index: 1;
     flex: 7;
   }
-  .menu {
+  .panel {
     font-size: 3vh;
     line-height: 2;
     z-index: 2;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
     position: absolute;
     top: 1em;
     right: 1em;
@@ -72,15 +118,22 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     left: 1em;
     transform: translate(0, -110%) translateZ(0);
     transition: transform .3s $timing-func;
-    // background: inherit; //rgba($light, 1);
-    // color: inherit; //$dark;
     border-radius: .3em;
+    > div {
+      position: relative;
+      z-index: 0;
+      border-radius: .3em;
+    }
+    input[type=range] {
+      margin-top: 0;
+    }
+  }
+  .menu {
+    flex-wrap: wrap;
     background: rgba(#000, .35);
     color: $light;
     backdrop-filter: blur(2em);
     > div {
-      position: relative;
-      z-index: 0;
       flex: 0 0 calc(100%/3);
       display: flex;
       font-size: .8em;
@@ -99,18 +152,7 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   }
 
   .sliders {
-    display: flex;
-    flex-direction: row;
     font-size: 2vh;
-    line-height: 2;
-    z-index: 2;
-    position: absolute;
-    top: 1em;
-    right: 1em;
-    bottom: 1em;
-    left: 1em;
-    transform: translate(0, -110%) translateZ(0);
-    transition: transform .3s $timing-func;
     pointer-events: none;
     > div {
       flex: 1;
@@ -125,9 +167,6 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
         color: $light;
         backdrop-filter: blur(2em);
       }
-    }
-    input[type=range] {
-      margin-top: 0;
     }
   }
   .button-bar {
@@ -149,16 +188,22 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     }
   }
 
-  .panel {
-    padding: 0;
+  .palette {
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     z-index: 3;
     flex: 1;
     min-height: 10em;
-    overflow: initial;
-    background: #000;
+    // background:;
     color: $light;
+    background:  #000 repeating-linear-gradient(
+      -45deg,
+      rgba(#FFF, .05),
+      rgba(#FFF, .05) .5em,
+      transparent .5em,
+      transparent 1em
+    );
     &.bottom {
       border-top: 1em solid;
     }
@@ -196,7 +241,7 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   }
   .hex-font {
     font-family: "DIN Alternate", monospace;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -236,6 +281,7 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   overflow: visible;
   transform-origin: 50% 50%;
   line-height: 0;
+  // transition: transform .3s ease-out;
   > div {
     display: flex;
     align-items: flex-start;
@@ -326,13 +372,13 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   }
   &.ui-sortable-placeholder,
   &.parking-spot {
-    background: repeating-linear-gradient(
-      45deg,
-      rgba(#FFF, .5),
-      rgba(#FFF, .5) .5em,
-      transparent .5em,
-      transparent 1em
-    );
+    // background: repeating-linear-gradient(
+    //   -45deg,
+    //   rgba(#FFF, .05),
+    //   rgba(#FFF, .05) .5em,
+    //   transparent .5em,
+    //   transparent 1em
+    // );
     &::after {
       content: '-------';
       display: inline-block;
@@ -479,17 +525,24 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   }
   &.fav-blocks {
     .main {
-      // flex-direction: column;
+      // flex-direction: column-reverse;
     }
-    .panel .color-brick {
-      flex: 1 1 25%;
-      .manage {
-        font-size: .8em;
-        margin: .5em 0 0 0;
+    .palette {
+
+      .color-brick {
+        flex: 0 1 25%;
+        .manage {
+          font-size: .8em;
+          margin: .5em 0 0 0;
+        }
       }
     }
     .canvas {
-      display: none;
+      flex: 1;
+      .color-display,
+      .panel {
+        display: none;
+      }
     }
   }
 
