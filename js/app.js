@@ -3,20 +3,40 @@
 
     angular.module('app', ['jamfu','ui.sortable']).controller('AppController', ['$scope', '$location', 'StorageService', 'UtilityService', function($scope, $location, storage, utils) {
 
+        var _defaultPrefs = {
+          useHash: false,
+          allowBW: false,
+          showHistory: false,
+          alwaysShowHex: false,
+          tanukiMode: false,
+          tweeks: {
+            klumpf: 2,
+            ichtzy: 5,
+            flarp: 100,
+            plark: 1,
+            marklar: 0.01,
+            quarble: 0.08,
+            cappa: true
+          }
+        };
+
         $scope.headline = 'Itchy Tanuki';
         $scope.icon = 'circle-o';
 
         $scope.colorHistory = storage.get('tanuki-history') || [];
         $scope.myColors = storage.get('tanuki-colors') || [];
-        $scope.preferences = storage.get('tanuki-preferences') || {useHash: false, showHistory: false, alwaysShowHex: false, tanukiMode: false};
 
-        $scope.useHash = $scope.preferences.useHash;
-        $scope.showHistory = $scope.preferences.showHistory;
+        $scope.preferences = storage.get('tanuki-preferences') || _defaultPrefs;
+
+        // $scope.useHash = $scope.preferences.useHash;
+        // $scope.allowBW = $scope.preferences.allowBW;
+        // $scope.showHistory = $scope.preferences.showHistory;
         $scope.showMenu = false;
         $scope.showSliders = false;
-        $scope.tanukiMode = $scope.preferences.tanukiMode;
+        // $scope.tanukiMode = $scope.preferences.tanukiMode;
+        // $scope.tweeks = $scope.preferences.tweeks;
 
-        $scope.colorSteps = $scope.tanukiMode ? 3 : 5;
+        $scope.colorSteps = 4; //$scope.preferences.tanukiMode ? 3 : 5;
 
         $scope.sortableOptions = {
             placeholder: 'color-brick parking-spot',
@@ -61,6 +81,12 @@
             storage.save('tanuki-colors', $scope.myColors);
         };
 
+        $scope.resetTweeks = function(){
+          $scope.preferences.tweeks = _defaultPrefs.tweeks;
+          // $scope.tweeks = _defaultPrefs.tweeks;
+          window.console.log('tweeks');
+        };
+
         var doIt = function(color){
             color = color ? color.toLowerCase() : utils.randomHexColor().toLowerCase();
 
@@ -71,11 +97,13 @@
             _.times(50, function(n){
               if(n % $scope.colorSteps === 0) {
                 var dn = color.darken(n);
-                if(cb < $scope.colorSteps) {
-                  darker.push(dn);
-                } else {
-                  if(cb - utils.colorBrightness(dn) > $scope.colorSteps) {
+                if(dn !== '#000000' || $scope.preferences.allowBW) {
+                  if(cb < $scope.colorSteps) {
                     darker.push(dn);
+                  } else {
+                    if(cb - utils.colorBrightness(dn) > $scope.colorSteps) {
+                      darker.push(dn);
+                    }
                   }
                 }
               }
@@ -85,7 +113,10 @@
             _.times(50, function(n){
               if(n % $scope.colorSteps === 0) {
                 var c = 50 - n;
-                lighter.push(color.lighten(c));
+                var ln = color.lighten(c);
+                if(ln !== '#ffffff' || $scope.preferences.allowBW) {
+                  lighter.push(ln);
+                }
               }
             });
 
@@ -98,15 +129,13 @@
 
             $scope.alternates = _.unique($scope.lighter.concat([color]).concat($scope.darker));
 
-            window.console.log($scope.alternates);
-
-            // inject a duplicate last item for overlap hackery
-            if(!$scope.tanukiMode) {
+            // inject a duplicate last item for overlap hackery in tanuki mode: flower
+            if(!$scope.preferences.tanukiMode) {
               $scope.alternates.push($scope.darkest);
             }
 
             $scope.deg = (360/($scope.alternates.length-1));
-            $scope.size = Math.floor((100/($scope.alternates.length-1) + Math.PI)/2);
+            $scope.size = Math.floor((100/($scope.alternates.length-2) + Math.PI)/2);
 
             $scope.color = color;
             $scope.tuner = {
@@ -167,37 +196,52 @@
         }});
 
         $scope.setRingRotation = function(){
-          var d = (($scope.alternates.length-2)*0.08) + 's';
+          var d = (($scope.alternates.length)*0.08) + 's';
           return {
-            transform: 'rotate3d(0,0,1,-'+$scope.ringDeg+'deg)',
+            // transform: 'rotate3d(0,0,1,-'+$scope.ringDeg+'deg)',
+            transform: 'rotate(-'+$scope.ringDeg+'deg) translateZ(0)',
             transitionDuration: d,
           };
         };
 
         $scope.setRotation = function(index){
           var i = index+1;
-          var deg = $scope.deg*(i);
-          var mar = '0 -'+$scope.size+'em';
-          var z = $scope.tanukiMode?i:$scope.alternates.length - i;
-          var d = (i*0.08) + 's';
+          var d = $scope.deg*(i);
+          var m = '0 -'+$scope.size+'em';
+          var z = $scope.preferences.tanukiMode?i:$scope.alternates.length - i;
+          var t = (i*$scope.preferences.tweeks.quarble) + 's';
+          var r = '';
           var s = '';
+          var f = '';
+          var n;
 
-          if($scope.tanukiMode) {
-            var n = -(Math.E * (Math.ceil(i/2) * 0.01) - Math.ceil(i/2));
-            s = ' scale3d('+ n +', '+ n +', 1)';
+          if($scope.preferences.tanukiMode) {
+            if($scope.preferences.tweeks.cappa) {
+              n = -(Math.E * (Math.ceil(i/$scope.preferences.tweeks.klumpf) * $scope.preferences.tweeks.marklar) - Math.ceil(i/$scope.preferences.tweeks.klumpf));
+            } else {
+              n = -(Math.E * ((i/$scope.preferences.tweeks.klumpf * $scope.preferences.tweeks.marklar) - i/$scope.preferences.tweeks.klumpf));
+            }
+            // s = ' scale3d('+ n +', '+ n +', 1)';
+            s = ' scale('+ n*$scope.preferences.tweeks.plark +')';
+            f = '-' + n + 'vmax';
+            m = '';
           }
 
           // hackery
-          if(!$scope.tanukiMode && i === $scope.alternates.length) {
-            deg = 360; //$scope.deg;
-            mar = '0 -'+$scope.size+'em 0 0';
+          if(!$scope.preferences.tanukiMode && i === $scope.alternates.length) {
+            d = 360; //$scope.deg;
+            m = '0 -'+$scope.size+'em 0 0';
             z = $scope.alternates.length;
           }
 
+          // r = 'rotate3d(0,0,1,'+d+'deg)';
+          r = 'rotate('+d+'deg)';
+
           return {
-            transform: 'rotate3d(0,0,1,'+deg+'deg)' + s,
-            margin: mar,
-            transitionDelay: d,
+            transform: r + s,
+            fontSize: f,
+            margin: m,
+            transitionDelay: t,
             zIndex: z
           };
         };
@@ -285,31 +329,12 @@
             }
         }, true);
 
-        $scope.$watch('useHash', function (value) {
-            $scope.preferences.useHash = value;
-            storage.save('tanuki-preferences', $scope.preferences);
-        });
-
-        $scope.$watch('showHistory', function (value) {
-            $scope.preferences.showHistory = value;
-            storage.save('tanuki-preferences', $scope.preferences);
-        });
-
-        $scope.$watch('alwaysShowHex', function (value) {
-            $scope.preferences.alwaysShowHex = value;
-            storage.save('tanuki-preferences', $scope.preferences);
-        });
-
-        $scope.$watch('moreSteps', function (value) {
-            $scope.preferences.moreSteps = value;
-            storage.save('tanuki-preferences', $scope.preferences);
-        });
-
-        $scope.$watch('tanukiMode', function (value) {
-            $scope.preferences.tanukiMode = value;
-            storage.save('tanuki-preferences', $scope.preferences);
-            $scope.colorSteps = value ? 3 : 5;
-        });
+        $scope.$watch('preferences', _.debounce(function (val) {
+          $scope.$apply(function(){
+            window.console.log(val);
+            storage.save('tanuki-preferences', val);
+          });
+        }, 100), true);
 
         $(window.document).on('keyup', function(e){
             if(e.keyCode === 32){ // spacebar

@@ -1,5 +1,24 @@
 $timing-func: cubic-bezier(.85,-1,.15,1.6);
 
+@mixin slider-track(){
+  // width: 100%;
+  border-radius: 1em;
+  height: .5em;
+  // margin: 1em 0;
+  background: $light;
+}
+
+@mixin slider-thumb() {
+  width: 1em;
+  height: 1em;
+  transform: scale(1.25, 1.25);
+  border: none;
+  border-radius: 100%;
+  // box-shadow: 0 0 1em 0 $light;
+  background: $light;
+  margin-top: -.25em;
+}
+
 .wrapper {
   transition: all 1s ease-out;
 }
@@ -18,108 +37,14 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
       font-size: 1.5em;
     }
     &.slidersActive .sliders {
-      transform: translate(0, 0);
+      transform: translate(0, 0) translateZ(0);
     }
     &.menuActive {
       .controls.top b {
         flex: 1;
       }
       .menu {
-        transform: translate(0, 0);
-      }
-    }
-    &:not(.tanuki-mode) {
-      .color-info {
-        width: 30vmax;
-        height: 30vmax;
-        box-shadow: 0 .5em 5em -1em #000;
-      }
-      .color-ring-outer {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-      .color-ring {
-        > div {
-          .color-brick {
-            border-radius: 100%;
-            box-shadow: 1.5em 0 2.5em -2em rgba(#000, .65);
-            &.current {
-              &::after {
-                content: '';
-                position: absolute;
-                top: 1em;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 1em;
-                height: 1em;
-                line-height: 0;
-                border-radius: 1em;
-                background: currentColor;
-              }
-              span {
-                background: none;
-                color: inherit;
-              }
-            }
-            span {
-              position: absolute;
-              top: -2em;
-              left: 50%;
-              transform: translateX(-50%);
-              color: inherit;
-            }
-          }
-          &.flip-my-hex .color-brick span {
-            transform: translateX(-50%) rotate(180deg);
-          }
-          &:nth-last-child(-n+2) {
-            transition: none;
-          }
-          &:last-child {
-            transform-origin: right bottom;
-            .color-brick {
-              pointer-events: none;
-              border-radius: 0 100% 10%/20% 60%;
-              box-shadow: .7em 1em 1.5em -1em rgba(#000, .65);
-              &::after {
-                left: 0;
-              }
-            }
-          }
-        }
-      }
-    }
-    &.tanuki-mode {
-      .history {
-        background: #000;
-      }
-      .color-info {
-        margin: -10vmin 0 0 0;
-        width: 40vmin;
-        height: 40vmin;
-        box-shadow: .35em -.1em 0 -.1em #000, .3em .3em 0 -.1em #000;
-      }
-      .color-ring {
-        > div {
-          top: -100vmax;
-          right: 10%;
-          bottom: 50%;
-          left: 10%;
-          .color-brick {
-            border-radius: 0 20% 50% 100%;
-            box-shadow: -1em 0 0 -.9em #000, 1em 0 0 .8em #000;
-            // &.current {
-            //   &::after {
-            //     left: 30%;
-            //     top: 80%;
-            //     width: 1em;
-            //     height: 1em;
-            //   }
-            // }
-          }
-        }
+        transform: translate(0, 0) translateZ(0);
       }
     }
   }
@@ -141,20 +66,21 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     display: flex;
     flex-wrap: wrap;
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    transform: translate(0, -101%);
+    top: 1em;
+    right: 1em;
+    bottom: 1em;
+    left: 1em;
+    transform: translate(0, -110%) translateZ(0);
     transition: transform .3s $timing-func;
     // background: inherit; //rgba($light, 1);
     // color: inherit; //$dark;
+    border-radius: .3em;
     background: rgba(#000, .35);
     color: $light;
-    backdrop-filter: blur(.5em);
+    backdrop-filter: blur(2em);
     > div {
       position: relative;
-      z-index: 1;
+      z-index: 0;
       flex: 0 0 calc(100%/3);
       display: flex;
       font-size: .8em;
@@ -163,9 +89,10 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      border-radius: .3em;
       &:hover {
         background: rgba($light, .1);
-        backdrop-filter: blur(.5em);
+        backdrop-filter: blur(1em);
         z-index: 2;
       }
     }
@@ -173,23 +100,31 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
 
   .sliders {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     font-size: 2vh;
     line-height: 2;
     z-index: 2;
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: auto;
-    max-width: 15em;
-    transform: translate(0, -101%);
+    top: 1em;
+    right: 1em;
+    bottom: 1em;
+    left: 1em;
+    transform: translate(0, -110%) translateZ(0);
     transition: transform .3s $timing-func;
-    background: rgba(#000, .35);
-    color: $light;
-    backdrop-filter: blur(.5em);
-    padding: 1em;
+    pointer-events: none;
     > div {
-      padding: 1em;
+      flex: 1;
+      &.gap {
+        flex: 2;
+      }
+      &:not(.gap) {
+        min-width: 12em;
+        padding: 1em;
+        pointer-events: auto;
+        background: rgba(#000, .35);
+        color: $light;
+        backdrop-filter: blur(2em);
+      }
     }
     input[type=range] {
       margin-top: 0;
@@ -216,12 +151,14 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
 
   .panel {
     padding: 0;
-    flex-direction: row-reverse;
+    flex-direction: row;
     flex-wrap: wrap;
     z-index: 3;
     flex: 1;
     min-height: 10em;
     overflow: initial;
+    background: #000;
+    color: $light;
     &.bottom {
       border-top: 1em solid;
     }
@@ -237,6 +174,8 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    background: $light;
+    color: $dark;
     > div {
       padding: 1em;
       position: relative;
@@ -262,14 +201,17 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
 }
 
 .ui-fun {
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
   transition: transform .3s $timing-func;
   &:hover {
-    transform: scale(1.5);
+    transform: scale(1.25) translateZ(0);
   }
   &:active {
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
   }
+}
+.trans {
+  transition: .3s ease-out;
 }
 .color-display {
   align-items: center;
@@ -277,6 +219,11 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   a {
     text-decoration: none;
     color: inherit;
+  }
+  &.no-trans {
+    .color-ring > div {
+      transition: none;
+    }
   }
 }
 
@@ -288,7 +235,6 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   border-radius: 100%;
   overflow: visible;
   transform-origin: 50% 50%;
-  transition: transform .3s ease-in;
   line-height: 0;
   > div {
     display: flex;
@@ -348,6 +294,7 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
   padding: .5em;
   flex: 1 0 auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 1;
@@ -357,6 +304,13 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
     transition: .3s ease-out;
     flex: 0 0 auto;
     border-radius: 2em;
+  }
+  .manage {
+    // position: absolute;
+    // top: 1em;
+    // right: 1em;
+    font-size: 0;
+    transition: .3s ease-out;
   }
   &.current {
     z-index: 2;
@@ -389,15 +343,13 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
 }
 
 .main:not(.always-show-hex) .color-brick {
-  span {font-size: 0;}
+  span, .manage {font-size: 0;}
   &.current span,
   &:hover span {font-size: 1em;}
 }
 
 .workspace {
   .controls.top {
-    background: $light;
-    color: $dark;
     > div {
       span {
         top: 6em;
@@ -425,28 +377,213 @@ $timing-func: cubic-bezier(.85,-1,.15,1.6);
       }
     }
   }
+
+  &:not(.tanuki-mode) {
+    .color-info {
+      width: 30vmax;
+      height: 30vmax;
+      box-shadow: 0 .5em 5em -1em #000;
+    }
+    .color-ring-outer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translateZ(0);
+    }
+    .color-ring {
+      > div {
+        .color-brick {
+          border-radius: 100%;
+          box-shadow: 1.5em 0 2.5em -2em rgba(#000, .65);
+          &.current {
+            &::after {
+              content: '';
+              position: absolute;
+              top: 1em;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 1em;
+              height: 1em;
+              line-height: 0;
+              border-radius: 1em;
+              background: currentColor;
+            }
+            span {
+              background: none;
+              color: inherit;
+            }
+          }
+          span {
+            position: absolute;
+            top: -2em;
+            left: 50%;
+            transform: translateX(-50%);
+            color: inherit;
+          }
+        }
+        &.flip-my-hex .color-brick span {
+          transform: translateX(-50%) rotate(180deg) translateZ(0);
+        }
+        &:nth-last-child(-n+2) {
+          transition: none;
+        }
+        &:last-child {
+          transform-origin: right bottom;
+          .color-brick {
+            pointer-events: none;
+            border-radius: 0 100% 10%/20% 60%;
+            box-shadow: .7em 1em 1.5em -1em rgba(#000, .65);
+            &::after {
+              left: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  &.tanuki-mode {
+    .controls {
+      color: $light;
+      background: $dark;
+      // invert
+      .bg-dark {
+        background: $light;
+        color: $dark;
+      }
+    }
+    // .menu, .sliders {
+    //   background: rgba($light, .35);
+    //   color: $dark;
+    // }
+    .history {
+      background: #000;
+    }
+    .color-info {
+      margin: -10vmin 0 0 0;
+      width: 40vmin;
+      height: 40vmin;
+      box-shadow: .35em -.1em 0 -.1em #000, .3em .3em 0 -.1em #000;
+    }
+    .color-ring {
+      > div {
+        top: -100vmax;
+        right: -5%;
+        bottom: 50%;
+        left: -5%;
+        .color-brick {
+          border-radius: 50% 20% 50% 100%;
+          box-shadow: -1em 0 0 -.9em #000, 1em 0 0 .8em #000;
+        }
+      }
+    }
+  }
+  &.fav-blocks {
+    .main {
+      // flex-direction: column;
+    }
+    .panel .color-brick {
+      flex: 1 1 25%;
+      .manage {
+        font-size: .8em;
+        margin: .5em 0 0 0;
+      }
+    }
+    .canvas {
+      display: none;
+    }
+  }
+
   // SLIDERS
   input[type="range"] {
-    padding: 0;
-    border: 0;
-    vertical-align: middle;
-    position: relative;
+    appearance: none;
     width: 100%;
-    border-radius: .2em;
     height: .5em;
     margin: 1em 0;
-    background: $light;
+    vertical-align: middle;
+    font-size: 1em;
+    border-radius: 1em;
 
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 1em;
-      height: 1em;
-      transform: scale(1.25, 1.25);
-      border: none;
-      border-radius: 100%;
-      box-shadow: 0 0 1em 0;
-      background: $light;
+    &::-webkit-slider-runnable-track {
+      @include slider-track();
     }
+    &::-webkit-slider-thumb {
+      appearance: none;
+      @include slider-thumb();
+    }
+
+    &::-moz-range-track {
+      @include slider-track();
+    }
+    &::-moz-range-thumb {
+      @include slider-thumb();
+    }
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    &:focus::-webkit-slider-thumb {
+      // box-shadow: 0 0 1em 0 $light;
+      box-shadow: 0 0 0 .5em rgba($light, .35);
+    }
+    &:focus::-moz-range-thumb {
+      box-shadow: 0 0 1em 0 $light;
+      box-shadow: 0 0 0 .5em rgba($light, .35);
+    }
+    &::-moz-focus-outer {
+      border: 0;
+    }
+  }
+
+  // toggle
+  input[type="checkbox"] {
+  	appearance: none;
+  	position: relative;
+  	background: transparent;
+    box-shadow: 0 0 0 .2em;
+  	padding: 1em 2em;
+  	border-radius: 1em;
+  	font-size: .78em;
+  	font-family: inherit;
+  	cursor: pointer;
+    color: inherit;
+  	outline: 0;
+  	/* vertical-align: middle; */
+  	margin: -.665em 0;
+  	transition: background .3s ease-out;
+
+  	// the dot
+  	&::before {
+  		content: '';
+  		position: absolute;
+  		top: 50%;
+  		left: 50%;
+  		transform: translate(-100%, -50%) scale(.8);
+  		background: white;
+  		padding: 1em;
+  		border-radius: 1em;
+  		transition: transform .3s ease-out;
+  	}
+
+  	// the data-state text
+  	&::after {
+  		content: attr(data-off);
+  		position: absolute;
+  		top: 50%;
+  		left: calc(100% + .2em);
+  		transform: translateY(-50%);
+  		color: rgba($active, .7); //initial;
+  	}
+
+  	&:checked {
+  		background: rgba($light, .6);
+  		&::before {
+  			transform: translate(0%, -50%) scale(.8);
+        box-shadow: 0 0 1em 0;
+  		}
+  		&::after {
+  			content: attr(data-on);
+  		}
+  	}
   }
 }
 
