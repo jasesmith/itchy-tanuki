@@ -1,0 +1,54 @@
+html, body, .wrapper {
+  overflow: hidden;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+.flex-row {
+  display: flex;
+  flex-direction: row; }
+
+.flex-wrap {
+  flex-wrap: wrap; }
+
+.flex-row-wrap {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; }
+
+.flex-column {
+  display: flex;
+  flex-direction: column; }
+
+.flex-0 {
+  flex: 0 0 0px !important; }
+
+.flex-1 {
+  flex: 1; }
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  transition: background 1s ease-out; }
+
+.workspace {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  position: relative;
+  z-index: 1; }
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  font-size: 1.2vmin;
+  font-family: "DIN Alternate", monospace; }
+
+/*# sourceMappingURL=itchy-tanuki.css.map */

@@ -1,13 +1,7 @@
-.as-sortable-item,
-.as-sortable-placeholder {
-    min-height: 3em;
-    display: block;
-}
-
 .as-sortable-item {
-    background-color: #ffffff;
-    -ms-touch-action: auto;
-    touch-action: auto;
+  background-color: #ffffff;
+  -ms-touch-action: auto;
+  touch-action: auto;
 }
 
 .as-sortable-item-handle {
@@ -15,23 +9,36 @@
 }
 
 .as-sortable-placeholder {
-    border: white 1px solid;
-    box-shadow: 0 0 0 1pt white inset;
+  width: auto !important;
+  height: auto !important;
+  display: flex !important;
+  box-shadow: 0 0 0 .3em $light inset;
+  &::after {
+    content: ''; //'-------';
+    display: inline-block;
+    font-size: 85%;
+    padding: .5em 1em;
+  }
 }
 
 .as-sortable-drag {
+  transform: rotate(-3deg);
+  box-shadow: 0 .5em 1em -.35em rgba(#000, .65);
+  position: absolute;
+  pointer-events: none;
+  font-size: .8em;
+  padding: 0;
+  min-height: 0 !important;
+  display: block !important;
+  background: none !important;
+  z-index: 50 !important;
+  .as-sortable-item {
     position: absolute;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: .65;
-    font-size: .8em;
-    padding: 0;//1em;
-    .data {
-        padding: .5em;
-    }
-    li {
-        width: 100% !important;
-    }
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }
 
 .as-sortable-hidden {

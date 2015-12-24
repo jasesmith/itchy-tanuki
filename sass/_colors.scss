@@ -8,6 +8,7 @@
 .bg-plum {background: $plum;color: contrast-color($plum);}
 .bg-light {background: $light;color: contrast-color($light);}
 .bg-dark {background: $dark;color: contrast-color($dark);}
+.bg-active {background: $active;color: contrast-color($active);}
 
 .fg-air {color: transparent;}
 .fg-apple {color: $apple;}
@@ -19,3 +20,4 @@
 .fg-plum {color: $plum;}
 .fg-light {color: $light;}
 .fg-dark {color: $dark;}
+.fg-active {color: $active;}

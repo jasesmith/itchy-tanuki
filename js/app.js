@@ -1,56 +1,200 @@
-(function($angular, _) {
+(function($angular, _, Hammer) {
     'use strict';
 
-    angular.module('app', ['jamfu','ui.sortable']).controller('AppController', ['$scope', '$location', 'StorageService', 'UtilityService', function($scope, $location, storage, utils) {
+    $angular
+    .module('app', ['picardy.fontawesome', 'as.sortable'])
+
+    .directive('tap', [function() {
+      return function(scope, element, attr) {
+        var hammerTap = new Hammer(element[0], {});
+        hammerTap.on('tap', function() {
+          scope.$apply(function() {
+            scope.$eval(attr.tap);
+          });
+        });
+      };
+    }])
+
+    .factory('LocalStorage', [function () {
+        // get item out of local storage and if it's a string, turn it into a json object
+        var get = function(key) {
+          var data, item = window.localStorage.getItem(key);
+          if (item && _.isString(item) && _.isEmpty(item) === false) {
+              data = $angular.fromJson(item);
+          } else {
+              data = item;
+          }
+          return data;
+        };
+        // save object as a json string
+        var save = function(key, data) {
+            window.localStorage.setItem(key, $angular.toJson(data));
+        };
+        // remove a specific store
+        var remove = function(key) {
+            window.localStorage.removeItem(key);
+        };
+        // blow them all away
+        var clearAll = function() {
+            window.localStorage.clear();
+        };
+
+        return {
+            get: get,
+            save: save,
+            remove: remove,
+            clearAll: clearAll
+        };
+    }])
+
+    .factory('UiHelpers', [function(){
+      // helpers
+      var _getNumbers = function(target){
+        var numbers = {};
+        if(target) {
+          numbers = {
+            t: target.offsetTop,
+            r: target.offsetLeft + target.offsetWidth,
+            b: target.offsetTop + target.offsetHeight,
+            l: target.offsetLeft,
+            w: target.offsetWidth,
+            h: target.offsetHeight,
+          };
+          // find x|y center
+          numbers.cx = (numbers.l + (numbers.w/2));
+          numbers.cy = (numbers.t + (numbers.h/2));
+        }
+        return numbers;
+      };
+
+      var _getDegree = function(input, el){
+        // window.console.log('GET DEG', input, b);
+        var barrel = _getNumbers(el);
+        var radians = Math.atan2((input.clientY - barrel.cy), (input.clientX - barrel.cx));
+        var degree = Math.round(radians * 180 / Math.PI);
+        return degree;
+      };
+
+      return {
+        getNumbers: _getNumbers,
+        getDegree: _getDegree
+      };
+    }])
+
+    .controller('AppController', ['$scope', '$location', '$document', 'LocalStorage', 'ColorService', 'UiHelpers', function($scope, $location, $document, storage, colors, ui) {
 
         _.mixin({clamp2: function(n, min, max) {
           return Math.min(Math.max(n, min), max);
         }});
 
+        var _modes = [
+          {name: 'tanuki', icon:'spinner'},
+          {name: 'florix', icon:'sun-o'},
+          {name: 'blook', icon:'square'}
+        ];
+
         var _defaultPrefs = {
           useHash: false,
           allowBW: false,
           showHistory: false,
+          showFavs: false,
           alwaysShowHex: false,
-          tanukiMode: false,
-          hexMode: 3, // 3|6
+          mode: _modes[1].name, //tanuki,florix, blook
+          toolbox: 'color', // color | display
+          // hexMode: 3, // 3|6
+          fancy: true,
           tweeks: {
-            klumpf: 2,
-            ichtzy: 5,
-            flarp: 100,
-            plark: 1,
-            marklar: 0.01,
-            quarble: 0.08,
-            cappa: true
+            tanuki: {
+              klumpf: 2,
+              ichtzy: 5,
+              flarp: 100,
+              plark: 1,
+              marklar: 0.01,
+              quarble: 0.08,
+              cappa: true
+            },
+            florix: {
+              quarble: 0,
+              borgee: 50,
+              gloosh: 100,
+              zarrt: 12,
+              syrris: 100,
+              shaado: 5,
+              shaada: -1,
+              shaadik: 0
+            },
+            blook: {
+              quarble: 0.04
+            }
           }
         };
 
+        var _lum = function(l, mod){
+          mod = mod || 255;
+          return colors.rgbObjToHex({
+            r: Math.round(l*mod),
+            g: Math.round(l*mod),
+            b: Math.round(l*mod)
+          }, true);
+        };
+
+        // var _lumFull = function(c){
+        //   return colors.rgbObjToHex({
+        //     r: Math.round(c.r*mod),
+        //     g: Math.round(c.g*mod),
+        //     b: Math.round(c.b*mod)
+        //   }, true);
+        // };
+
         $scope.colorHistory = storage.get('tanuki-history') || [];
         $scope.myColors = storage.get('tanuki-colors') || [];
+        $scope.modes = _modes;
 
         $scope.preferences = storage.get('tanuki-preferences') || _defaultPrefs;
 
         $scope.showMenu = false;
         $scope.showSliders = false;
+        $scope.tab = 'color';
+
+        $scope.touching = false;
 
         $scope.colorSteps = 5;
 
+        $scope.mode = _.findWhere(_modes, {name: $scope.preferences.mode});
+        $scope.kulra = _lum($scope.preferences.tweeks.florix.shaadik, 255);
+        // $scope.lum = _lumFull($scope.tuner, 255);
+
         $scope.sortableOptions = {
-            placeholder: 'color-brick parking-spot',
-            tolerance: 'pointer',
-            stop: function() {
-                var list = _.clone($scope.myColors);
-                 var newList = _.map(list, function(i){
-                    return i;
-                });
-                $scope.$apply();
-                $scope.myColors =  _.compact(newList);
-                storage.save('tanuki-colors', $scope.myColors);
+            containerPositioning: 'relative',
+            containment: '.palette',
+            additionalPlaceholderClass: 'color-brick parking-spot',
+            dragEnd: function() {
+              var list = _.clone($scope.myColors);
+               var newList = _.map(list, function(i){
+                  return i;
+              });
+              $scope.myColors =  _.compact(newList);
+              // $scope.$apply();
+              storage.save('tanuki-colors', $scope.myColors);
             }
         };
 
+        // var _sortableOptions = {
+        //     placeholder: 'color-brick parking-spot',
+        //     tolerance: 'pointer',
+        //     stop: function() {
+        //         var list = _.clone($scope.myColors);
+        //          var newList = _.map(list, function(i){
+        //             return i;
+        //         });
+        //         $scope.myColors =  _.compact(newList);
+        //         $scope.$apply();
+        //         storage.save('tanuki-colors', $scope.myColors);
+        //     }
+        // };
+
         var _notInRunLoop = function _notInRunLoop() {
-            return !$scope.$root.$$phase;
+          return !$scope.$root.$$phase;
         };
 
         var addToColorHistory = function(history, color){
@@ -62,135 +206,159 @@
                 history.push(color);
             }
 
-            $scope.colorHistory = _.last(history, 25);
+            $scope.colorHistory = _.last(history, 20);
             storage.save('tanuki-history', $scope.colorHistory);
         };
 
-        var _rgbObjToHex = function(color, useHash){
-          /*jslint bitwise: true */
-          var c = color.b | (color.g << 8) | (color.r << 16) | (1 << 24);
-          /*jslint bitwise: false */
-          return (useHash ? '#':'') + c.toString(16).substring(1,8);
+        // var _rgbObjToHex = function(color, useHash){
+        //   /*jslint bitwise: true */
+        //   var c = color.b | (color.g << 8) | (color.r << 16) | (1 << 24);
+        //   /*jslint bitwise: false */
+        //   return (useHash ? '#':'') + c.toString(16).substring(1,8);
+        // };
+
+        $scope.cycleModes = function(mode) {
+          if(!$scope.preferences.showFavs) {
+            if(mode === 'blook') {
+              $scope.preferences.mode = 'tanuki';
+            } else if(mode === 'florix') {
+              $scope.preferences.mode = 'blook';
+            } else {
+              $scope.preferences.mode = 'florix';
+            }
+            $scope.mode = _.findWhere(_modes, {name: $scope.preferences.mode});
+          }
         };
 
         $scope.clearColorHistory = function(){
             $scope.colorHistory = [];
-            // $scope.colorHistory.push($scope.color);
             storage.save('tanuki-history', $scope.colorHistory);
         };
 
         $scope.clearSavedColors = function(){
             $scope.myColors = [];
-            // $scope.colorHistory.push($scope.color);
             storage.save('tanuki-colors', $scope.myColors);
         };
 
-        $scope.resetTweeks = function(){
-          $scope.preferences.tweeks = $angular.copy(_defaultPrefs.tweeks);
+        $scope.clearPrefs = function() {
+          storage.remove('tanuki-preferences');
+          storage.save('tanuki-preferences', $angular.copy(_defaultPrefs));
+          window.location.reload();
+        };
+
+        $scope.resetTweeks = function(mode){
+          $scope.preferences.tweeks[mode] = $angular.copy(_defaultPrefs.tweeks[mode]);
         };
 
         var doIt = function(color){
-            if(_.isUndefined(color) || color === '#') {
-              color = utils.randomHexColor();
-            }
-            color = color.toHexColor().toLowerCase();
+          if(!color || color === '#') {
+            color = colors.randomHex();
+          }
+          color = colors.toHex(color).toLowerCase();
 
-            addToColorHistory($scope.colorHistory, color);
+          addToColorHistory($scope.colorHistory, color);
 
-            var cb = utils.colorBrightness(color);
-            var darker = [];
-            _.times(50, function(n){
-              if(n % $scope.colorSteps === 0) {
-                var dn = color.darken(n);
-                if(dn !== '#000000' || $scope.preferences.allowBW) {
-                  if(cb < $scope.colorSteps) {
+          var cb = colors.brightness(color);
+          var darker = [];
+          _.times(50, function(n){
+            if(n % $scope.colorSteps === 0) {
+              var dn = colors.darken(color, n);
+              if(dn !== '#000000' || $scope.preferences.allowBW) {
+                if(cb < $scope.colorSteps) {
+                  darker.push(dn);
+                } else {
+                  if(cb - colors.brightness(dn) > $scope.colorSteps) {
                     darker.push(dn);
-                  } else {
-                    if(cb - utils.colorBrightness(dn) > $scope.colorSteps) {
-                      darker.push(dn);
-                    }
                   }
                 }
               }
-            });
+            }
+          });
 
-            var lighter = [];
-            _.times(50, function(n){
-              if(n % $scope.colorSteps === 0) {
-                var c = 50 - n;
-                var ln = color.lighten(c);
-                if(ln !== '#ffffff' || $scope.preferences.allowBW) {
-                  lighter.push(ln);
-                }
+          var lighter = [];
+          _.times(50, function(n){
+            if(n % $scope.colorSteps === 0) {
+              var c = 50 - n;
+              var ln = colors.lighten(color, c);
+              if(ln !== '#ffffff' || $scope.preferences.allowBW) {
+                lighter.push(ln);
               }
-            });
-
-            $scope.darker = _.unique(darker);
-            $scope.lighter = _.unique(lighter);
-
-            // edges
-            $scope.lightest = _.first($scope.lighter);
-            $scope.darkest = _.last($scope.darker);
-
-            $scope.alternates = _.unique($scope.lighter.concat([color]).concat($scope.darker));
-
-            // inject a duplicate last item for overlap hackery in tanuki mode: flower
-            if(!$scope.preferences.tanukiMode) {
-              $scope.alternates.push($scope.darkest);
             }
+          });
 
-            $scope.deg = (360/($scope.alternates.length-1));
-            $scope.size = Math.floor((100/($scope.alternates.length-2) + Math.PI)/2);
+          $scope.darker = _.unique(darker);
+          $scope.lighter = _.unique(lighter);
 
-            $scope.color = color;
-            $scope.tuner = {
-              r: color.red(),
-              g: color.green(),
-              b: color.blue(),
-              hex: color,
-              brightness: cb
-            };
-            $scope.brightness = cb;
-            $scope.controlBg = _.first($scope.darker);
-            $scope.controlFg = _.last($scope.lighter);
+          // edges
+          $scope.lightest = _.first($scope.lighter);
+          $scope.darkest = _.last($scope.darker);
+          // middles
+          $scope.lightish = $scope.lighter.length > 2 ? $scope.lighter[$scope.lighter.length-3] : color;
+          $scope.darkish = $scope.darker.length > 2 ? $scope.darker[2] : color;
 
-            $scope.accent = $scope.alternates[$scope.alternates.length-4];
+          $scope.alternates = _.unique($scope.lighter.concat([color]).concat($scope.darker));
 
-            var rotateFactor = _.findIndex($scope.alternates, function(item){
-                return item === $scope.color;
-            });
-
-            $scope.ringDeg = $scope.deg*(rotateFactor+1);
-
-            if($scope.preferences.useHash) {
-                window.location.hash = color.replace('#', '#/');
+          // inject a duplicate last item for overlap hackery in tanuki mode: flower
+          if($scope.preferences.mode === 'florix') {
+            if(!$scope.darkest) {
+              $scope.darkest = color;
             }
+            $scope.alternates.push($scope.darkest);
+          }
 
-            if (_notInRunLoop()) {
-                try {
-                    // Sometimes we're outside of the Angular run-loop,
-                    // and therefore need to manually invoke the `apply` method!
-                    $scope.$apply();
-                } catch(e) {}
-            }
+          $scope.deg = (360/($scope.alternates.length-1));
+          $scope.size = Math.floor((100/($scope.alternates.length-2) + Math.PI)/2);
+
+          $scope.color = color;
+          $scope.tuner = {
+            r: colors.red(color),
+            g: colors.green(color),
+            b: colors.blue(color),
+            hex: color,
+            brightness: cb
+          };
+          $scope.brightness = cb;
+          $scope.controlBg = _.first($scope.darker);
+          $scope.controlFg = _.last($scope.lighter);
+
+          $scope.accent = $scope.alternates[$scope.alternates.length-4];
+
+          $scope.rotateFactor = _.findIndex($scope.alternates, function(item){
+            return item === $scope.color;
+          });
+
+          $scope.ringDeg = $scope.deg*($scope.rotateFactor+1);
+
+          if($scope.preferences.useHash) {
+            window.location.hash = color.replace('#', '#/');
+          }
+
+          if (_notInRunLoop()) {
+            try {
+              // Sometimes we're outside of the Angular run-loop,
+              // and therefore need to manually invoke the `apply` method
+              $scope.$apply();
+            } catch(e) {}
+          }
         };
 
         $scope.doIt = function(color){
-            doIt(color);
+          doIt(color);
         };
 
         $scope.setNewColor = function(color){
-          $scope.tuner.hex = _rgbObjToHex(color, true);
-          $scope.tuner.brightness = utils.colorBrightness($scope.tuner.hex);
+          $scope.tuner.hex = colors.rgbObjToHex(color, true);
+          $scope.tuner.brightness = colors.brightness($scope.tuner.hex);
           doIt($scope.tuner.hex);
         };
 
         $scope.setRingRotation = function(){
-          var d = (($scope.alternates.length) * ($scope.preferences.tanukiMode ? $scope.preferences.tweeks.quarble : _defaultPrefs.tweeks.quarble));
+          // var l = $scope.preferences.mode === 'tanuki' ? $scope.alternates.length : $scope.alternates.length - 1;
+          // var d = $scope.moving ? 0 : ((l) * parseFloat($scope.preferences.tweeks[$scope.preferences.mode].quarble));
           return {
             // transform: 'rotate3d(0,0,1,-'+$scope.ringDeg+'deg)',
-            transform: 'rotate(-'+$scope.ringDeg+'deg) translateZ(0)',
-            transitionDuration: d+'s',
+            transform: 'rotate(-'+$scope.ringDeg+'deg) translateZ(0)'
+            // transitionDuration: d+'s',
           };
         };
 
@@ -198,27 +366,27 @@
           var i = index+1;
           var d = $scope.deg*(i);
           var m = '0 -'+$scope.size+'em';
-          var z = $scope.preferences.tanukiMode ? i : $scope.alternates.length - i;
-          var t = $scope.preferences.tanukiMode ? (i * $scope.preferences.tweeks.quarble) : (i * _defaultPrefs.tweeks.quarble);
+          var z = $scope.preferences.mode === 'tanuki' ? i : $scope.alternates.length - i;
+          var t = (i * parseFloat($scope.preferences.tweeks[$scope.preferences.mode].quarble));
           var r = '';
           var s = '';
           var f = '';
           var n;
 
-          if($scope.preferences.tanukiMode) {
-            if($scope.preferences.tweeks.cappa) {
-              n = -(Math.E * (Math.ceil(i/$scope.preferences.tweeks.klumpf) * $scope.preferences.tweeks.marklar) - Math.ceil(i/$scope.preferences.tweeks.klumpf));
+          if($scope.preferences.mode === 'tanuki') {
+            if($scope.preferences.tweeks.tanuki.cappa) {
+              n = -(Math.E * (Math.ceil(i/$scope.preferences.tweeks.tanuki.klumpf) * $scope.preferences.tweeks.tanuki.marklar) - Math.ceil(i/$scope.preferences.tweeks.tanuki.klumpf));
             } else {
-              n = -(Math.E * ((i/$scope.preferences.tweeks.klumpf * $scope.preferences.tweeks.marklar) - i/$scope.preferences.tweeks.klumpf));
+              n = -(Math.E * ((i/$scope.preferences.tweeks.tanuki.klumpf * $scope.preferences.tweeks.tanuki.marklar) - i/$scope.preferences.tweeks.tanuki.klumpf));
             }
             // s = ' scale3d('+ n +', '+ n +', 1)';
-            s = ' scale('+ n*$scope.preferences.tweeks.plark +')';
+            s = ' scale('+ n*$scope.preferences.tweeks.tanuki.plark +')';
             f = '-' + n + 'vmax';
             m = '';
           }
 
           // hackery
-          if(!$scope.preferences.tanukiMode && i === $scope.alternates.length) {
+          if($scope.preferences.mode === 'florix' && i === $scope.alternates.length) {
             d = 360; //$scope.deg;
             m = '0 -'+$scope.size+'em 0 0';
             z = $scope.alternates.length;
@@ -241,16 +409,64 @@
           return test > 90 && test < 270 ? 'flip-my-hex' : '';
         };
 
+        var dial = $angular.element(window.document.querySelector('.canvas'));
+        var ring = $angular.element(window.document.querySelector('.color-ring'));
+
+        var hammerDial = new Hammer(dial[0], {});
+        var input, l, n, d, i, k, c;
+        hammerDial.get('pan').set({
+          direction: Hammer.DIRECTION_ALL,
+          threshold: 0
+        });
+        hammerDial
+        .on('panstart', function(e) {
+          l = $scope.alternates.length-1;
+          n = 360/l;
+        })
+        .on('pan panmove', function(e) {
+          input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
+          d = 360 - $scope.deg - ui.getDegree(input[0], dial[0]); // - ($scope.deg*Math.PI);
+          d = d >= 360 ? d-360 : (d <= -360 ? d+360 : d);
+          i = l - Math.floor(Math.abs(d)/n);
+          k = l - i;
+          // window.console.log(d, l, n, i);
+          k = k < 0 ? 0 : (k > l ? l : k);
+          c = $scope.alternates[k];
+          $scope.tuner = {
+            r: colors.red(c),
+            g: colors.green(c),
+            b: colors.blue(c),
+            hex: c,
+            brightness: colors.brightness(c)
+          };
+          $scope.color = c;
+          $scope.brightness = $scope.tuner.brightness;
+          ring.css({
+            // transform: 'rotate3d(0,0,1,-'+d+'deg)',
+            transform: 'rotate('+ (-d) +'deg) translateZ(0)',
+            transitionDuration: '0s'
+          });
+          $scope.$apply();
+        })
+        .on('panend pancancel', function(e) {
+          // var l = $scope.preferences.mode === 'tanuki' ? $scope.alternates.length : $scope.alternates.length - 1;
+          // var t = ((l) * parseFloat($scope.preferences.tweeks[$scope.preferences.mode].quarble));
+          // ring.css({
+          //   transitionDuration: t+'s'
+          // });
+          // $scope.$apply();
+        });
+
         $scope.saveColor = function(color){
-            var index = _.findIndex($scope.myColors, function(item){
-                return item === color;
-            });
-            if(index > -1) {
-                $scope.myColors.splice(index, 1);
-            } else {
-                $scope.myColors.push(color);
-            }
-            storage.save('tanuki-colors', $scope.myColors);
+          var index = _.findIndex($scope.myColors, function(item){
+            return item === color;
+          });
+          if(index > -1) {
+            $scope.myColors.splice(index, 1);
+          } else {
+            $scope.myColors.push(color);
+          }
+          storage.save('tanuki-colors', $scope.myColors);
         };
 
         $scope.shareColors = function(){
@@ -262,33 +478,33 @@
         };
 
         $scope.isSaved = function(color){
-            return _.find($scope.myColors, function(item){
-                return item === color;
-            });
+          return _.find($scope.myColors, function(item){
+            return item === color;
+          });
         };
 
         $scope.loadColor = function(color){
-            if($scope.preferences.useHash) {
-                window.location.hash = color.toLowerCase().replace('#', '#/');
-            } else {
-                doIt(color);
-            }
+          if($scope.preferences.useHash) {
+            window.location.hash = color.toLowerCase().replace('#', '#/');
+          } else {
+            doIt(color);
+          }
         };
 
         $scope.setClasses = function(color, test, affectText){
-            if(color) {
-                var classes = [];
-                if(affectText) {
-                  var text = utils.colorBrightness(color) < 155 ? 'fg-light' : 'fg-dark';
-                  classes.push(text);
-                }
-
-                if(color === test) {
-                    classes.push('current');
-                }
-
-                return classes.join(' ');
+          if(color) {
+            var classes = [];
+            if(affectText) {
+              var text = colors.brightness(color) < 155 ? 'fg-light' : 'fg-dark';
+              classes.push(text);
             }
+
+            if(color === test) {
+                classes.push('current');
+            }
+
+            return classes.join(' ');
+          }
         };
 
         // var getHashColor = function(color) {
@@ -302,49 +518,56 @@
         //
         // getHashColor();
 
-        $scope.$watch(function () {
-            var hash = window.location.hash;
-            return hash ? hash.replace('/', '') : '';
-        }, function (color) {
-            doIt(color);
+        $scope.hash = window.location.hash ? window.location.hash.replace('/', '') : '';
+
+        $scope.$watch('hash', function (color) {
+          doIt(color);
         });
 
         $scope.$watch('tuner', function(n, o){
           if(n && n !== o) {
-            n.hex = _rgbObjToHex(n, true);
-            n.brightness = utils.colorBrightness(n.hex);
+            n.hex = colors.rgbObjToHex(n, true);
+            n.brightness = colors.brightness(n.hex);
             return n.hex;
           }
         }, true);
 
         $scope.$watch('colorSteps', function (n, o) {
-            if(n && n !== o) {
-              doIt($scope.color);
-            }
+          if(n && n !== o) {
+            doIt($scope.color);
+          }
         });
 
-        $scope.$watch('preferences', _.debounce(function (n, o) {
-          $scope.$apply(function(){
-            window.console.log(n);
-            storage.save('tanuki-preferences', n);
-            if(n && (n.tanukiMode !== o.tanukiMode) || (n.allowBW !== o.allowBW)) {
+        $scope.$watch('preferences', function (n, o) {
+          if(n && o && n !== o) {
+            $scope.savePrefs = n;
+            if((n.mode !== o.mode) || (n.allowBW !== o.allowBW)) {
               doIt($scope.color);
             }
-          });
+            if((n.tweeks.florix.shaadik !== o.tweeks.florix.shaadik)) {
+              $scope.kulra = _lum(n.tweeks.florix.shaadik, 255);
+            }
+          }
+        }, true);
+
+        $scope.$watch('savePrefs', _.debounce(function (n) {
+          if(n) {
+            storage.save('tanuki-preferences', n);
+          }
         }, 500), true);
 
-        $(window.document).on('keyup', function(e){
-          window.console.log(e.keyCode);
-            if(e.keyCode === 32){ // spacebar
-                doIt();
-            }
-            if(e.keyCode === 27){ // spacebar
-              $scope.showMenu = false;
-              $scope.showSliders = false;
-              $scope.favs = false;
-              $scope.$apply();
-            }
+        $document.on('keyup', function(e){
+          if(e.keyCode === 32){ // spacebar
+              doIt();
+          }
+          if(e.keyCode === 27){ // esc
+            $scope.showMenu = false;
+            $scope.showSliders = false;
+            $scope.preferences.showFavs = false;
+            $scope.preferences.showHistory = false;
+            $scope.$apply();
+          }
         });
     }]);
 
-})(window.angular, window._);
+})(window.angular, window._, window.Hammer);
