@@ -442,8 +442,7 @@
 
         var hammerDial = new Hammer(dial[0], {});
         var input, l, n, k, c;
-        // var r, rad = 0, lastRad = 0, cursorRad, relativeRad, rotationRad;
-        var d, deg = 0, lastDeg = 0, cursorDeg, relativeDeg, rotationDeg;
+        var deg = 0, lastDeg = 0, pointerDeg, relativeDeg, rotationDeg;
 
         hammerDial.get('pan').set({
           direction: Hammer.DIRECTION_ALL,
@@ -458,57 +457,31 @@
           input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
           deg = -ui.getDegrees(input[0], dial[0]);
           lastDeg = $scope.ringDeg;
-          // rad = -ui.getRadians(input[0], dial[0]);
         })
 
         .on('pan panmove', function(e) {
           input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
-          // d = 360 - n - ui.getDegrees(input[0], dial[0]); // - ($scope.deg*Math.PI);
-          // d = d >= 360 ? d-360 : (d <= -360 ? d+360 : d);
-          // k = _updateColorByDeg(l, d, n);
-
-          // DEGREE-based
-          cursorDeg = -ui.getDegrees(input[0], dial[0]);
-          relativeDeg = cursorDeg - deg;
+          pointerDeg = -ui.getDegrees(input[0], dial[0]);
+          relativeDeg = pointerDeg - deg;
           rotationDeg = lastDeg + relativeDeg;
           if(isNaN(rotationDeg)) {rotationDeg = lastDeg;}
           if(rotationDeg < 0) {rotationDeg = ui.maxDegrees;}
           if(rotationDeg > ui.maxDegrees) {rotationDeg = 0;}
-          deg = cursorDeg;
-
-          // // RADIAN-based
-          // cursorRad = -ui.getRadians(input[0], dial[0]);
-          // relativeRad = cursorDeg - deg;
-          // rotationRad = lastDeg + relativeRad;
-          // if(isNaN(rotationRad)) {rotationRad = lastRad;}
-          // if(rotationRad < 0) {rotationRad = ui.maxRadians;}
-          // if(rotationRad > ui.maxRadians) {rotationRad = 0;}
-          // rad = cursorRad;
+          deg = pointerDeg;
 
           ring.css({
-            // transform: 'rotate3d(0,0,1,-'+d+'deg)',
             transform: 'rotate('+ -rotationDeg +'deg) translateZ(0)',
-            // transform: 'rotate('+ -rotationRad +'rad) translateZ(0)',
             transitionDuration: '0s'
           });
 
           k = _updateColorByDeg(l, rotationDeg, n);
           lastDeg = rotationDeg;
-
-          // d = rotationRad * (Math.PI/180);
-          // k = _updateColorByDeg(l, d, n);
-          // lastRad = rotationRad;
-
           $scope.$apply();
         })
 
         .on('panend pancancel', function() {
-          d = n*(k+1);
-          lastDeg = d;
-          // r = n*(k+1) * (Math.PI/180);
+          $scope.ringDeg = lastDeg;
           ring.css({
-            transform: 'rotate('+ (-d) +'deg) translateZ(0)',
-            // transform: 'rotate('+ r +'rad) translateZ(0)',
             transitionDuration: ''
           });
           $scope.$apply();
