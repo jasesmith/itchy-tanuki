@@ -48,6 +48,8 @@
     }])
 
     .factory('UiHelpers', [function(){
+      var maxDegrees = 360;
+      var maxRadians = 6.28318530718; //6.283185307179586;
       // helpers
       var _getNumbers = function(target){
         var numbers = {};
@@ -67,17 +69,28 @@
         return numbers;
       };
 
-      var _getDegree = function(input, el){
-        // window.console.log('GET DEG', input, b);
-        var barrel = _getNumbers(el);
-        var radians = Math.atan2((input.clientY - barrel.cy), (input.clientX - barrel.cx));
-        var degree = Math.round(radians * 180 / Math.PI);
+      var _getRadians = function(input, el){
+        var metrics = _getNumbers(el);
+        var radians = Math.atan2((input.clientY - metrics.cy), (input.clientX - metrics.cx));
+        radians+=maxRadians/4;
+        if(radians < 0) {
+          radians+=maxRadians;
+        }
+        return radians;
+      };
+
+      var _getDegrees = function(input, el){
+        var radians = _getRadians(input, el);
+        var degree = radians * 180 / Math.PI;
         return degree;
       };
 
       return {
+        maxRadians: maxRadians,
+        maxDegrees: maxDegrees,
         getNumbers: _getNumbers,
-        getDegree: _getDegree
+        getRadians: _getRadians,
+        getDegrees: _getDegrees
       };
     }])
 
@@ -157,7 +170,6 @@
         $scope.tab = 'color';
 
         $scope.touching = false;
-
         $scope.colorSteps = 5;
 
         $scope.mode = _.findWhere(_modes, {name: $scope.preferences.mode});
@@ -409,28 +421,10 @@
           return test > 90 && test < 270 ? 'flip-my-hex' : '';
         };
 
-        var dial = $angular.element(window.document.querySelector('.canvas'));
-        var ring = $angular.element(window.document.querySelector('.color-ring'));
-
-        var hammerDial = new Hammer(dial[0], {});
-        var input, l, n, d, i, k, c;
-        hammerDial.get('pan').set({
-          direction: Hammer.DIRECTION_ALL,
-          threshold: 0
-        });
-        hammerDial
-        .on('panstart', function(e) {
-          l = $scope.alternates.length-1;
-          n = 360/l;
-        })
-        .on('pan panmove', function(e) {
-          input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
-          d = 360 - $scope.deg - ui.getDegree(input[0], dial[0]); // - ($scope.deg*Math.PI);
-          d = d >= 360 ? d-360 : (d <= -360 ? d+360 : d);
-          i = l - Math.floor(Math.abs(d)/n);
-          k = l - i;
-          // window.console.log(d, l, n, i);
-          k = k < 0 ? 0 : (k > l ? l : k);
+        var _updateColorByDeg = function(l, d, n){
+          var i = l - Math.floor(Math.abs(d)/n);
+          var k = l - i;
+          k = (k < 0 ? 0 : (k > l ? l : k));
           c = $scope.alternates[k];
           $scope.tuner = {
             r: colors.red(c),
@@ -440,21 +434,84 @@
             brightness: colors.brightness(c)
           };
           $scope.color = c;
-          $scope.brightness = $scope.tuner.brightness;
+          return k;
+        };
+
+        var dial = $angular.element(window.document.querySelector('.canvas'));
+        var ring = $angular.element(window.document.querySelector('.color-ring'));
+
+        var hammerDial = new Hammer(dial[0], {});
+        var input, l, n, k, c;
+        // var r, rad = 0, lastRad = 0, cursorRad, relativeRad, rotationRad;
+        var d, deg = 0, lastDeg = 0, cursorDeg, relativeDeg, rotationDeg;
+
+        hammerDial.get('pan').set({
+          direction: Hammer.DIRECTION_ALL,
+          threshold: 0
+        });
+
+        hammerDial
+
+        .on('panstart', function(e) {
+          l = $scope.alternates.length-1;
+          n = 360/l;
+          input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
+          deg = -ui.getDegrees(input[0], dial[0]);
+          lastDeg = $scope.ringDeg;
+          // rad = -ui.getRadians(input[0], dial[0]);
+        })
+
+        .on('pan panmove', function(e) {
+          input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
+          // d = 360 - n - ui.getDegrees(input[0], dial[0]); // - ($scope.deg*Math.PI);
+          // d = d >= 360 ? d-360 : (d <= -360 ? d+360 : d);
+          // k = _updateColorByDeg(l, d, n);
+
+          // DEGREE-based
+          cursorDeg = -ui.getDegrees(input[0], dial[0]);
+          relativeDeg = cursorDeg - deg;
+          rotationDeg = lastDeg + relativeDeg;
+          if(isNaN(rotationDeg)) {rotationDeg = lastDeg;}
+          if(rotationDeg < 0) {rotationDeg = ui.maxDegrees;}
+          if(rotationDeg > ui.maxDegrees) {rotationDeg = 0;}
+          deg = cursorDeg;
+
+          // // RADIAN-based
+          // cursorRad = -ui.getRadians(input[0], dial[0]);
+          // relativeRad = cursorDeg - deg;
+          // rotationRad = lastDeg + relativeRad;
+          // if(isNaN(rotationRad)) {rotationRad = lastRad;}
+          // if(rotationRad < 0) {rotationRad = ui.maxRadians;}
+          // if(rotationRad > ui.maxRadians) {rotationRad = 0;}
+          // rad = cursorRad;
+
           ring.css({
             // transform: 'rotate3d(0,0,1,-'+d+'deg)',
-            transform: 'rotate('+ (-d) +'deg) translateZ(0)',
+            transform: 'rotate('+ -rotationDeg +'deg) translateZ(0)',
+            // transform: 'rotate('+ -rotationRad +'rad) translateZ(0)',
             transitionDuration: '0s'
           });
+
+          k = _updateColorByDeg(l, rotationDeg, n);
+          lastDeg = rotationDeg;
+
+          // d = rotationRad * (Math.PI/180);
+          // k = _updateColorByDeg(l, d, n);
+          // lastRad = rotationRad;
+
           $scope.$apply();
         })
-        .on('panend pancancel', function(e) {
-          // var l = $scope.preferences.mode === 'tanuki' ? $scope.alternates.length : $scope.alternates.length - 1;
-          // var t = ((l) * parseFloat($scope.preferences.tweeks[$scope.preferences.mode].quarble));
-          // ring.css({
-          //   transitionDuration: t+'s'
-          // });
-          // $scope.$apply();
+
+        .on('panend pancancel', function() {
+          d = n*(k+1);
+          lastDeg = d;
+          // r = n*(k+1) * (Math.PI/180);
+          ring.css({
+            transform: 'rotate('+ (-d) +'deg) translateZ(0)',
+            // transform: 'rotate('+ r +'rad) translateZ(0)',
+            transitionDuration: ''
+          });
+          $scope.$apply();
         });
 
         $scope.saveColor = function(color){

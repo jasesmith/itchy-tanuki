@@ -269,19 +269,24 @@ html, body, .wrapper {
     .workspace .main.historyActive .history {
       transform: translate(0, 0) translateZ(0); }
   .workspace .canvas {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    z-index: 1;
+    flex: 7;
+    transition: all 1.5s ease-in-out; }
+    .workspace .canvas.fancy {
+      background-image: radial-gradient(circle at 50% 60%, #FFF, transparent);
+      background-blend-mode: overlay; }
+  .workspace .dial {
     overflow: hidden;
     position: relative;
+    flex: 1;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    z-index: 1;
-    flex: 7;
-    transition: all 1.5s ease-in-out;
     transform: translateZ(0); }
-    .workspace .canvas.fancy {
-      background-image: radial-gradient(circle at 50% 60%, #FFF, transparent);
-      background-blend-mode: overlay; }
   .workspace .panel {
     font-size: 2vh;
     line-height: 2;
@@ -289,6 +294,10 @@ html, body, .wrapper {
     display: flex;
     flex-direction: row;
     position: absolute;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
     top: 0;
     right: 0;
     bottom: 0;
@@ -441,6 +450,15 @@ html, body, .wrapper {
   transform-origin: 50% 50%;
   line-height: 0;
   transition: transform 0.3s ease-out; }
+  .color-ring::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1em;
+    height: 1em;
+    background: red; }
   .color-ring > div {
     display: flex;
     align-items: flex-start;
