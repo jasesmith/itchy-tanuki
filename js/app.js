@@ -48,8 +48,8 @@
     }])
 
     .factory('UiHelpers', [function(){
-      var maxDegrees = 360;
-      var maxRadians = 6.28318530718; //6.283185307179586;
+      var maxDegrees = 359;
+      var maxRadians = 6.283185307179586;
       // helpers
       var _getNumbers = function(target){
         var numbers = {};
@@ -72,16 +72,16 @@
       var _getRadians = function(input, el){
         var metrics = _getNumbers(el);
         var radians = Math.atan2((input.clientY - metrics.cy), (input.clientX - metrics.cx));
-        radians+=maxRadians/4;
+        radians += maxRadians/4;
         if(radians < 0) {
-          radians+=maxRadians;
+          radians += maxRadians;
         }
         return radians;
       };
 
       var _getDegrees = function(input, el){
         var radians = _getRadians(input, el);
-        var degree = radians * 180 / Math.PI;
+        var degree = radians * 180/Math.PI;
         return degree;
       };
 
@@ -151,14 +151,6 @@
           }, true);
         };
 
-        // var _lumFull = function(c){
-        //   return colors.rgbObjToHex({
-        //     r: Math.round(c.r*mod),
-        //     g: Math.round(c.g*mod),
-        //     b: Math.round(c.b*mod)
-        //   }, true);
-        // };
-
         $scope.colorHistory = storage.get('tanuki-history') || [];
         $scope.myColors = storage.get('tanuki-colors') || [];
         $scope.modes = _modes;
@@ -170,11 +162,10 @@
         $scope.tab = 'color';
 
         $scope.touching = false;
-        $scope.colorSteps = 5;
+        $scope.colorSteps = 6;
 
         $scope.mode = _.findWhere(_modes, {name: $scope.preferences.mode});
         $scope.kulra = _lum($scope.preferences.tweeks.florix.shaadik, 255);
-        // $scope.lum = _lumFull($scope.tuner, 255);
 
         $scope.sortableOptions = {
             containerPositioning: 'relative',
@@ -190,20 +181,6 @@
               storage.save('tanuki-colors', $scope.myColors);
             }
         };
-
-        // var _sortableOptions = {
-        //     placeholder: 'color-brick parking-spot',
-        //     tolerance: 'pointer',
-        //     stop: function() {
-        //         var list = _.clone($scope.myColors);
-        //          var newList = _.map(list, function(i){
-        //             return i;
-        //         });
-        //         $scope.myColors =  _.compact(newList);
-        //         $scope.$apply();
-        //         storage.save('tanuki-colors', $scope.myColors);
-        //     }
-        // };
 
         var _notInRunLoop = function _notInRunLoop() {
           return !$scope.$root.$$phase;
@@ -221,13 +198,6 @@
             $scope.colorHistory = _.last(history, 20);
             storage.save('tanuki-history', $scope.colorHistory);
         };
-
-        // var _rgbObjToHex = function(color, useHash){
-        //   /*jslint bitwise: true */
-        //   var c = color.b | (color.g << 8) | (color.r << 16) | (1 << 24);
-        //   /*jslint bitwise: false */
-        //   return (useHash ? '#':'') + c.toString(16).substring(1,8);
-        // };
 
         $scope.cycleModes = function(mode) {
           if(!$scope.preferences.showFavs) {
@@ -318,6 +288,9 @@
             $scope.alternates.push($scope.darkest);
           }
 
+          $scope.controlBg = _.first($scope.darker);
+          $scope.controlFg = _.last($scope.lighter);
+
           $scope.deg = (360/($scope.alternates.length-1));
           $scope.size = Math.floor((100/($scope.alternates.length-2) + Math.PI)/2);
 
@@ -329,11 +302,6 @@
             hex: color,
             brightness: cb
           };
-          $scope.brightness = cb;
-          $scope.controlBg = _.first($scope.darker);
-          $scope.controlFg = _.last($scope.lighter);
-
-          $scope.accent = $scope.alternates[$scope.alternates.length-4];
 
           $scope.rotateFactor = _.findIndex($scope.alternates, function(item){
             return item === $scope.color;
@@ -365,12 +333,8 @@
         };
 
         $scope.setRingRotation = function(){
-          // var l = $scope.preferences.mode === 'tanuki' ? $scope.alternates.length : $scope.alternates.length - 1;
-          // var d = $scope.moving ? 0 : ((l) * parseFloat($scope.preferences.tweeks[$scope.preferences.mode].quarble));
           return {
-            // transform: 'rotate3d(0,0,1,-'+$scope.ringDeg+'deg)',
             transform: 'rotate(-'+$scope.ringDeg+'deg) translateZ(0)'
-            // transitionDuration: d+'s',
           };
         };
 
@@ -422,7 +386,9 @@
         };
 
         var _updateColorByDeg = function(l, d, n){
-          var i = l - Math.floor(Math.abs(d)/n);
+          var m = n/2;
+          var i = l - Math.floor(Math.abs(d - m)/n);
+          window.console.log(d, i);
           var k = l - i;
           k = (k < 0 ? 0 : (k > l ? l : k));
           c = $scope.alternates[k];
@@ -440,17 +406,14 @@
         var dial = $angular.element(window.document.querySelector('.canvas'));
         var ring = $angular.element(window.document.querySelector('.color-ring'));
 
-        var hammerDial = new Hammer(dial[0], {});
         var input, l, n, k, c;
-        var deg = 0, lastDeg = 0, pointerDeg, relativeDeg, rotationDeg;
-
+        var d, deg = 0, lastDeg = 0, pointerDeg, relativeDeg, rotationDeg;
+        var hammerDial = new Hammer(dial[0], {});
         hammerDial.get('pan').set({
           direction: Hammer.DIRECTION_ALL,
           threshold: 0
         });
-
         hammerDial
-
         .on('panstart', function(e) {
           l = $scope.alternates.length-1;
           n = 360/l;
@@ -458,8 +421,7 @@
           deg = -ui.getDegrees(input[0], dial[0]);
           lastDeg = $scope.ringDeg;
         })
-
-        .on('pan panmove', function(e) {
+        .on('pan panmove', function(e) { // _.throttle(, 30)
           input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
           pointerDeg = -ui.getDegrees(input[0], dial[0]);
           relativeDeg = pointerDeg - deg;
@@ -468,19 +430,18 @@
           if(rotationDeg < 0) {rotationDeg = ui.maxDegrees;}
           if(rotationDeg > ui.maxDegrees) {rotationDeg = 0;}
           deg = pointerDeg;
-
           ring.css({
-            transform: 'rotate('+ -rotationDeg +'deg) translateZ(0)',
+            transform: 'rotate(-'+ rotationDeg +'deg) translateZ(0)',
             transitionDuration: '0s'
           });
-
           k = _updateColorByDeg(l, rotationDeg, n);
           lastDeg = rotationDeg;
           $scope.$apply();
         })
-
         .on('panend pancancel', function() {
-          $scope.ringDeg = lastDeg;
+          d = n*(k+1);
+          window.console.log('>> d', n, k, d);
+          $scope.ringDeg = d; //lastDeg;
           ring.css({
             transitionDuration: ''
           });

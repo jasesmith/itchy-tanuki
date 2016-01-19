@@ -268,13 +268,22 @@ html, body, .wrapper {
       transform: translate(0, 0) translateZ(0); }
     .workspace .main.historyActive .history {
       transform: translate(0, 0) translateZ(0); }
-  .workspace .canvas {
+  .workspace section {
+    overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: row;
     z-index: 1;
     flex: 7;
-    transition: all 1.5s ease-in-out; }
+    transition: 1.5s ease-in-out; }
+  .workspace .canvas {
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    z-index: 1;
+    flex: 7;
+    transition: 1.5s ease-in-out; }
     .workspace .canvas.fancy {
       background-image: radial-gradient(circle at 50% 60%, #FFF, transparent);
       background-blend-mode: overlay; }
@@ -285,12 +294,11 @@ html, body, .wrapper {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
-    transform: translateZ(0); }
+    align-items: center; }
   .workspace .panel {
     font-size: 2vh;
     line-height: 2;
-    z-index: 2;
+    z-index: 4;
     display: flex;
     flex-direction: row;
     position: absolute;
@@ -314,7 +322,7 @@ html, body, .wrapper {
     background-color: rgba(0, 0, 0, 0.65);
     color: #FFF;
     box-shadow: 0 0 0 .3em inset; }
-    .workspace .menu > div {
+    .workspace .menu > div:not(.panel-toggle) {
       flex: 0 0 calc(100%/3);
       display: flex;
       white-space: nowrap;
@@ -324,9 +332,19 @@ html, body, .wrapper {
       justify-content: center;
       border-radius: .3em;
       text-transform: capitalize; }
-      .workspace .menu > div:hover {
+      .workspace .menu > div:not(.panel-toggle):hover {
         background: rgba(255, 255, 255, 0.1);
         z-index: 2; }
+    .workspace .menu .panel-toggle {
+      background: #FFF;
+      color: #363639;
+      position: absolute;
+      top: 0;
+      right: 0;
+      line-height: 0;
+      padding: 1.3em 1.3em 1em 1em;
+      z-index: 3;
+      border-radius: 0; }
   .workspace .sliders {
     pointer-events: none; }
     .workspace .sliders > div {
@@ -350,6 +368,11 @@ html, body, .wrapper {
     .workspace .sliders .settings {
       overflow: auto;
       padding: 1em; }
+    .workspace .sliders .panel-toggle {
+      background: #FFF;
+      color: #363639;
+      padding: .7em;
+      margin: -.75em -.75em -1.05em 1em; }
   .workspace .button-bar {
     text-align: center;
     margin: .3em;
@@ -450,15 +473,6 @@ html, body, .wrapper {
   transform-origin: 50% 50%;
   line-height: 0;
   transition: transform 0.3s ease-out; }
-  .color-ring::after {
-    content: '';
-    position: absolute;
-    top: -60%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1em;
-    height: 1em;
-    background: red; }
   .color-ring > div {
     display: flex;
     align-items: flex-start;
@@ -537,6 +551,17 @@ html, body, .wrapper {
 .main:not(.always-show-hex) .palette .color-brick.current .hex {
   font-size: 1em; }
 
+.workspace.mode-florix .canvas::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: #363639 transparent transparent transparent;
+  border-width: 2em 2em 0 2em; }
 .workspace.mode-florix .color-info {
   box-shadow: 0 .5em 5em -1em #000; }
 .workspace.mode-florix .color-ring > div .color-brick {
@@ -706,8 +731,12 @@ html, body, .wrapper {
 
 @media screen and (max-width: 40em), screen and (orientation: portrait) {
   .workspace .main {
-    font-size: 1.2vmax; }
-  .workspace .canvas {
-    flex-direction: column; } }
+    font-size: 1.2vmax; } }
+@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi) {
+  .menu,
+  .sliders > div:not(.gap) {
+    background-color: rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: blur(2em);
+            backdrop-filter: blur(2em); } }
 
 /*# sourceMappingURL=styles.css.map */

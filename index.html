@@ -38,27 +38,29 @@
                     <div tap="preferences.showFavs = !preferences.showFavs;showMenu=false;showSliders=false;preferences.showHistory=false" ng-class="{'fg-active': preferences.showFavs}"><fa name="th" size="large" fw></fa></div>
                   </div>
 
-                  <div class="canvas" ng-class="{'fancy': preferences.fancy}" ng-style="{'background-color': color}">
+                  <!-- <section> -->
+                    <div class="canvas" ng-class="{'fancy': preferences.fancy}" ng-style="{'background-color': color}">
 
-                    <div class="dial">
-                      <div class="color-display flex-column" ng-class="{'no-trans': preferences.tweeks[mode.name].quarble == 0}">
+                      <div class="dial">
+                        <div class="color-display flex-column" ng-class="{'no-trans': preferences.tweeks[mode.name].quarble == 0}">
 
-                        <div class="color-ring-outer">
-                          <div class="color-ring" ng-style="setRingRotation()">
-                            <div ng-repeat="c in alternates track by $index" ng-class="setRotationClasses($index)" ng-style="setRotation($index)">
-                              <div class="color-brick" tap="loadColor(c)" ng-class="setClasses(c, color, false)" ng-style="{'backgroundColor': c}">
-                                <span class="hex" ng-if="!$last && mode.name !== 'tanuki'">{{c}}</span>
+                          <div class="color-ring-outer">
+                            <div class="color-ring" ng-style="setRingRotation()">
+                              <div ng-repeat="c in alternates track by $index" ng-class="setRotationClasses($index)" ng-style="setRotation($index)">
+                                <div class="color-brick" tap="loadColor(c)" ng-class="setClasses(c, color, false)" ng-style="{'backgroundColor': c}">
+                                  <span class="hex" ng-if="!$last && mode.name !== 'tanuki'">{{c}}</span>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div class="color-info flex-column hex-font" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}">
-                          <div tap="saveColor(tuner.hex)"><fa name="{{(isSaved(tuner.hex) ? 'heart':'heart-o')}}" size="3" fw></fa></div>
-                          <h1><a href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
-                          <div class="refresh" tap="doIt()"><fa name="tint" size="4" fw></fa></div>
-                        </div>
+                          <div class="color-info flex-column hex-font" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}">
+                            <div tap="saveColor(tuner.hex)"><fa name="{{(isSaved(tuner.hex) ? 'heart':'heart-o')}}" size="3" fw></fa></div>
+                            <h1><a href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
+                            <div class="refresh" tap="doIt()"><fa name="tint" size="4" fw></fa></div>
+                          </div>
 
+                        </div>
                       </div>
                     </div>
 
@@ -71,12 +73,13 @@
                           <div class="flex-row">
                             <label for="fancy" class="flex-1"><span class="ghost">Fancy</span></label>
                             <span><input type="checkbox" ng-model="preferences.fancy" id="fancy" data-on="" data-off="" /></span>
+                            <div class="panel-toggle" tap="showSliders = !showSliders"><fa name="times" size="2" fw></fa></div>
                           </div>
                         </div>
 
                         <nav class="flex-auto flex-row button-bar">
-                          <div class="flex-1 button" tap="preferences.toolbox = 'color'" ng-class="{'active': preferences.toolbox === 'color'}" xng-style="{'padding':'1em'}"><fa name="tint" size="large" fw></fa></div>
-                          <div class="flex-1 button" tap="preferences.toolbox = 'display'" ng-class="{'active': preferences.toolbox === 'display'}" xng-style="{'padding':'1em'}"><fa name="wrench" size="large" fw></fa></div>
+                          <div class="flex-1 button" tap="preferences.toolbox = 'color'" ng-class="{'active': preferences.toolbox === 'color'}"><fa name="tint" size="large" fw></fa></div>
+                          <div class="flex-1 button" tap="preferences.toolbox = 'display'" ng-class="{'active': preferences.toolbox === 'display'}"><fa name="wrench" size="large" fw></fa></div>
                         </nav>
 
                         <div class="settings flex-1" ng-show="preferences.toolbox === 'color'">
@@ -88,12 +91,13 @@
                             <label><span class="ghost">Luminance</span> {{lum}} <br /><input type="range" ng-model="lum" min="0" max="255" step="1" /></label> -->
                             <hr />
                             <div><span class="ghost">Brightness</span> {{tuner.brightness}}</div>
+                            <div><span class="ghost">HEX</span> {{tuner.hex}}</div>
                           </div>
                         </div>
 
                         <div class="flex-auto flex-row button-bar" ng-show="preferences.toolbox === 'color'">
                           <div class="flex-1" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'padding':'1em 0','background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}" tap="setNewColor(tuner)">
-                            <fa name="check-circle" size="large" fw></fa>
+                            <fa name="check" size="large" fw ng-class="{'vapor': tuner.hex === color}"></fa>
                           </div>
                           <div class="flex-1" ng-class="setClasses(color, null, true)" ng-style="{'padding':'1em 0','background': color}" tap="loadColor(color)">
                             <fa name="undo trans" size="large" fw ng-class="{'vapor': tuner.hex === color}"></fa>
@@ -129,7 +133,7 @@
 
                         </div>
                         <div class="flex-auto flex-row button-bar" ng-show="preferences.toolbox === 'display'">
-                          <div class="flex-1 bg-light" xng-class="setClasses(color, null, true)" ng-style="{'padding':'1em 0','xsbackground': color}" tap="resetTweeks(mode.name)">
+                          <div class="flex-1 bg-light" ng-style="{'padding':'1em 0','xsbackground': color}" tap="resetTweeks(mode.name)">
                             <fa name="undo trans" size="large" fw></fa>
                           </div>
                         </div>
@@ -179,14 +183,16 @@
                         <div>Use URLs</div>
                       </div>
                       -->
+                      <div class="panel-toggle" tap="showMenu = !showMenu"><fa name="times" size="2" fw></fa></div>
                     </div>
-                  </div>
+
+                  <!-- </section> -->
 
                   <div class="palette bottom history">
                       <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" tap="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
                         <span class="hex">{{c}}</span>
                       </div>
-                      <div class="history-toggle" xng-class="{'ghost': !preferences.showHistory}" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false"><fa name="{{(preferences.showHistory?'times':'history')}}" size="2" fw></fa></div>
+                      <div class="history-toggle" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false"><fa name="{{(preferences.showHistory?'times':'history')}}" size="2" fw></fa></div>
                   </div>
                 </main>
             </div>
