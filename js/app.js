@@ -169,7 +169,7 @@
 
         $scope.sortableOptions = {
             containerPositioning: 'relative',
-            containment: '.palette',
+            // containment: '.palette',
             additionalPlaceholderClass: 'color-brick parking-spot',
             dragEnd: function() {
               var list = _.clone($scope.myColors);
