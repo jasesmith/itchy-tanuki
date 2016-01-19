@@ -78,8 +78,8 @@
                         </div>
 
                         <nav class="flex-auto flex-row button-bar">
-                          <div class="flex-1 button" tap="preferences.toolbox = 'color'" ng-class="{'active': preferences.toolbox === 'color'}"><fa name="tint" size="large" fw></fa></div>
-                          <div class="flex-1 button" tap="preferences.toolbox = 'display'" ng-class="{'active': preferences.toolbox === 'display'}"><fa name="wrench" size="large" fw></fa></div>
+                          <div class="flex-1 button" tap="preferences.toolbox = 'color'" ng-class="{'active': preferences.toolbox === 'color'}"><fa name="tint" size="2" fw></fa></div>
+                          <div class="flex-1 button" tap="preferences.toolbox = 'display'" ng-class="{'active': preferences.toolbox === 'display'}"><fa name="wrench" size="2" fw></fa></div>
                         </nav>
 
                         <div class="settings flex-1" ng-show="preferences.toolbox === 'color'">
@@ -134,7 +134,7 @@
                         </div>
                         <div class="flex-auto flex-row button-bar" ng-show="preferences.toolbox === 'display'">
                           <div class="flex-1 bg-light" ng-style="{'padding':'1em 0','xsbackground': color}" tap="resetTweeks(mode.name)">
-                            <fa name="undo trans" size="large" fw></fa>
+                            <fa name="undo trans" size="2" fw></fa>
                           </div>
                         </div>
                       </div>
@@ -192,7 +192,7 @@
                       <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" tap="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
                         <!-- <span class="hex">{{c}}</span> -->
                       </div>
-                      <div class="history-toggle" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false"><fa name="{{(preferences.showHistory?'times':'history')}}" size="2" fw></fa></div>
+                      <div class="history-toggle" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false"><fa name="{{(preferences.showHistory?'times':'history')}}" size="3" fw></fa></div>
                   </div>
                 </main>
             </div>
