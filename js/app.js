@@ -48,7 +48,7 @@
     }])
 
     .factory('UiHelpers', [function(){
-      var maxDegrees = 359;
+      var maxDegrees = 360;
       var maxRadians = 6.283185307179586;
       // helpers
       var _getNumbers = function(target){
@@ -548,10 +548,10 @@
         }, 500), true);
 
         $document.on('keyup', function(e){
-          if(e.keyCode === 32){ // spacebar
+          if(e.which === 32){ // spacebar
               doIt();
           }
-          if(e.keyCode === 27){ // esc
+          if(e.which === 27){ // esc
             $scope.showMenu = false;
             $scope.showSliders = false;
             $scope.preferences.showFavs = false;
