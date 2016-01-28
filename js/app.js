@@ -94,7 +94,7 @@
       };
     }])
 
-    .controller('AppController', ['$scope', '$location', '$document', 'LocalStorage', 'ColorService', 'UiHelpers', function($scope, $location, $document, storage, colors, ui) {
+    .controller('AppController', ['$scope', '$document', 'LocalStorage', 'ColorService', 'UiHelpers', function($scope, $document, storage, colors, ui) {
 
         _.mixin({clamp2: function(n, min, max) {
           return Math.min(Math.max(n, min), max);
@@ -115,6 +115,7 @@
           mode: _modes[1].name, //tanuki,florix, blook
           toolbox: 'color', // color | display
           // hexMode: 3, // 3|6
+          defaultColor: null, //'#0ebeff',
           fancy: true,
           tweeks: {
             tanuki: {
@@ -142,7 +143,7 @@
           }
         };
 
-        var _lum = function(l, mod){
+        var _lum = function _lum(l, mod){
           mod = mod || 255;
           return colors.rgbObjToHex({
             r: Math.round(l*mod),
@@ -151,42 +152,89 @@
           }, true);
         };
 
-        $scope.colorHistory = storage.get('tanuki-history') || [];
-        $scope.myColors = storage.get('tanuki-colors') || [];
-        $scope.modes = _modes;
-
-        $scope.preferences = storage.get('tanuki-preferences') || _defaultPrefs;
-
-        $scope.showMenu = false;
-        $scope.showSliders = false;
-        $scope.tab = 'color';
-
-        $scope.touching = false;
-        $scope.colorSteps = 6;
-
-        $scope.mode = _.findWhere(_modes, {name: $scope.preferences.mode});
-        $scope.kulra = _lum($scope.preferences.tweeks.florix.shaadik, 255);
-
-        $scope.sortableOptions = {
-            containerPositioning: 'relative',
-            // containment: '.palette',
-            additionalPlaceholderClass: 'color-brick parking-spot',
-            dragEnd: function() {
-              var list = _.clone($scope.myColors);
-               var newList = _.map(list, function(i){
-                  return i;
-              });
-              $scope.myColors =  _.compact(newList);
-              // $scope.$apply();
-              storage.save('tanuki-colors', $scope.myColors);
-            }
+        var hotkeys = function hotkeys(e){
+          if(e.which === 32){ // spacebar
+              $scope.doIt();
+          }
+          if(e.which === 27){ // esc
+            $scope.showMenu = false;
+            $scope.showSliders = false;
+            $scope.preferences.showFavs = false;
+            $scope.preferences.showHistory = false;
+            $scope.$apply();
+          }
         };
 
         var _notInRunLoop = function _notInRunLoop() {
           return !$scope.$root.$$phase;
         };
 
-        var addToColorHistory = function(history, color){
+        var getColorFromHash = function getColorFromHash(){
+          return window.location.hash;
+        };
+
+        var setColor = function setColor(color, useHash, forceRemoveHash){
+          if(color && color !== $scope.color) {
+            $scope.color = color;
+          }
+          if(forceRemoveHash) {
+            window.history.replaceState({}, '', '/'); //window.location.pathname);
+          } else {
+            if(useHash) {
+              window.location.hash = color;
+            }
+          }
+        };
+
+        var init = function init(){
+          var color = getColorFromHash();
+
+          $scope.colorHistory = storage.get('tanuki-history') || [];
+          $scope.myColors = storage.get('tanuki-colors') || [];
+          $scope.modes = _modes;
+
+          $scope.preferences = storage.get('tanuki-preferences') || _defaultPrefs;
+
+          $scope.showMenu = false;
+          $scope.showSliders = false;
+          $scope.tab = 'color';
+
+          $scope.touching = false;
+          $scope.colorSteps = 6;
+
+          $scope.mode = _.findWhere(_modes, {name: $scope.preferences.mode});
+          $scope.kulra = _lum($scope.preferences.tweeks.florix.shaadik, 255);
+
+          if(!colors.isValidHex(color)) {
+            color = $scope.preferences.defaultColor;
+          }
+
+          window.console.log('init', color);
+
+          $document.on('keyup', hotkeys);
+          // remove the listener on the document when this directive's scope is destroyed. Else LEAK!
+          $scope.$on('$destroy', function() {
+            $document.off('keyup', hotkeys);
+          });
+
+          $scope.sortableOptions = {
+              containerPositioning: 'relative',
+              containment: '.palette',
+              additionalPlaceholderClass: 'color-brick parking-spot',
+              dragEnd: function() {
+                var list = _.clone($scope.myColors);
+                 var newList = _.map(list, function(i){
+                    return i;
+                });
+                $scope.myColors =  _.compact(newList);
+                storage.save('tanuki-colors', $scope.myColors);
+              }
+          };
+
+          $scope.doIt(color);
+        };
+
+        var addToColorHistory = function addToColorHistory(history, color){
             var c = _.find(history, function(item){
                 return item === color;
             });
@@ -199,7 +247,7 @@
             storage.save('tanuki-history', $scope.colorHistory);
         };
 
-        $scope.cycleModes = function(mode) {
+        $scope.cycleModes = function cycleModes(mode) {
           if(!$scope.preferences.showFavs) {
             if(mode === 'blook') {
               $scope.preferences.mode = 'tanuki';
@@ -212,31 +260,32 @@
           }
         };
 
-        $scope.clearColorHistory = function(){
+        $scope.clearColorHistory = function clearColorHistory(){
             $scope.colorHistory = [];
             storage.save('tanuki-history', $scope.colorHistory);
         };
 
-        $scope.clearSavedColors = function(){
+        $scope.clearSavedColors = function clearSavedColors(){
             $scope.myColors = [];
             storage.save('tanuki-colors', $scope.myColors);
         };
 
-        $scope.clearPrefs = function() {
+        $scope.clearPrefs = function clearPrefs() {
           storage.remove('tanuki-preferences');
           storage.save('tanuki-preferences', $angular.copy(_defaultPrefs));
           window.location.reload();
         };
 
-        $scope.resetTweeks = function(mode){
+        $scope.resetTweeks = function resetTweeks(mode){
           $scope.preferences.tweeks[mode] = $angular.copy(_defaultPrefs.tweeks[mode]);
         };
 
-        var doIt = function(color){
-          if(!color || color === '#') {
-            color = colors.randomHex();
+        $scope.doIt = function doIt(color){
+          if(!colors.isValidHex(color)) {
+            color = colors.randomHex().toLowerCase();
+          } else {
+            color = colors.toHex(color).toLowerCase();
           }
-          color = colors.toHex(color).toLowerCase();
 
           addToColorHistory($scope.colorHistory, color);
 
@@ -278,21 +327,21 @@
           $scope.lightish = $scope.lighter.length > 2 ? $scope.lighter[$scope.lighter.length-3] : color;
           $scope.darkish = $scope.darker.length > 2 ? $scope.darker[2] : color;
 
-          $scope.alternates = _.unique($scope.lighter.concat([color]).concat($scope.darker));
+          $scope.shades = _.unique($scope.lighter.concat([color]).concat($scope.darker));
 
           // inject a duplicate last item for overlap hackery in tanuki mode: flower
           if($scope.preferences.mode === 'florix') {
             if(!$scope.darkest) {
               $scope.darkest = color;
             }
-            $scope.alternates.push($scope.darkest);
+            $scope.shades.push($scope.darkest);
           }
 
           $scope.controlBg = _.first($scope.darker);
           $scope.controlFg = _.last($scope.lighter);
 
-          $scope.deg = (360/($scope.alternates.length-1));
-          $scope.size = Math.floor((100/($scope.alternates.length-2) + Math.PI)/2);
+          $scope.deg = (360/($scope.shades.length-1));
+          $scope.size = Math.floor((100/($scope.shades.length-2) + Math.PI)/2);
 
           $scope.color = color;
           $scope.tuner = {
@@ -303,15 +352,13 @@
             brightness: cb
           };
 
-          $scope.rotateFactor = _.findIndex($scope.alternates, function(item){
-            return item === $scope.color;
+          $scope.rotateFactor = _.findIndex($scope.shades, function(item){
+            return item === color;
           });
 
           $scope.ringDeg = $scope.deg*($scope.rotateFactor+1);
 
-          if($scope.preferences.useHash) {
-            window.location.hash = color.replace('#', '#/');
-          }
+          setColor(color, $scope.preferences.useHash);
 
           if (_notInRunLoop()) {
             try {
@@ -322,27 +369,23 @@
           }
         };
 
-        $scope.doIt = function(color){
-          doIt(color);
-        };
-
-        $scope.setNewColor = function(color){
+        $scope.setNewColor = function setNewColor(color){
           $scope.tuner.hex = colors.rgbObjToHex(color, true);
           $scope.tuner.brightness = colors.brightness($scope.tuner.hex);
-          doIt($scope.tuner.hex);
+          $scope.doIt($scope.tuner.hex);
         };
 
-        $scope.setRingRotation = function(){
+        $scope.setRingRotation = function setRingRotation(){
           return {
             transform: 'rotate(-'+$scope.ringDeg+'deg) translateZ(0)'
           };
         };
 
-        $scope.setRotation = function(index){
+        $scope.setRotation = function setRotation(index){
           var i = index+1;
           var d = $scope.deg*(i);
           var m = '0 -'+$scope.size+'em';
-          var z = $scope.preferences.mode === 'tanuki' ? i : $scope.alternates.length - i;
+          var z = $scope.preferences.mode === 'tanuki' ? i : $scope.shades.length - i;
           var t = (i * parseFloat($scope.preferences.tweeks[$scope.preferences.mode].quarble));
           var r = '';
           var s = '';
@@ -362,10 +405,10 @@
           }
 
           // hackery
-          if($scope.preferences.mode === 'florix' && i === $scope.alternates.length) {
+          if($scope.preferences.mode === 'florix' && i === $scope.shades.length) {
             d = 360; //$scope.deg;
             m = '0 -'+$scope.size+'em 0 0';
-            z = $scope.alternates.length;
+            z = $scope.shades.length;
           }
 
           // r = 'rotate3d(0,0,1,'+d+'deg)';
@@ -380,18 +423,18 @@
           };
         };
 
-        $scope.setRotationClasses = function(index){
+        $scope.setRotationClasses = function setRotationClasses(index){
           var test = Math.abs($scope.ringDeg - $scope.deg*(index+1));
           return test > 90 && test < 270 ? 'flip-my-hex' : '';
         };
 
-        var _updateColorByDeg = function(l, d, n){
+        var _updateColorByDeg = function _updateColorByDeg(l, d, n){
           var m = n/2;
           var i = l - Math.floor(Math.abs(d - m)/n);
-          window.console.log(d, i);
           var k = l - i;
+          var c;
           k = (k < 0 ? 0 : (k > l ? l : k));
-          c = $scope.alternates[k];
+          c = $scope.shades[k];
           $scope.tuner = {
             r: colors.red(c),
             g: colors.green(c),
@@ -399,14 +442,17 @@
             hex: c,
             brightness: colors.brightness(c)
           };
-          $scope.color = c;
-          return k;
+          // $scope.color = c;
+          return {
+            color: c,
+            key: k
+          };
         };
 
         var dial = $angular.element(window.document.querySelector('.canvas'));
         var ring = $angular.element(window.document.querySelector('.color-ring'));
 
-        var input, l, n, k, c;
+        var input, l, n, k = {};
         var d, deg = 0, lastDeg = 0, pointerDeg, relativeDeg, rotationDeg;
         var hammerDial = new Hammer(dial[0], {});
         hammerDial.get('pan').set({
@@ -414,14 +460,14 @@
           threshold: 0
         });
         hammerDial
-        .on('panstart', function(e) {
-          l = $scope.alternates.length-1;
+        .on('panstart', function panstart(e) {
+          l = $scope.shades.length-1;
           n = 360/l;
           input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
           deg = -ui.getDegrees(input[0], dial[0]);
           lastDeg = $scope.ringDeg;
         })
-        .on('pan panmove', function(e) { // _.throttle(, 30)
+        .on('pan panmove', function panmove(e) { // _.throttle(, 30)
           input = e.srcEvent && e.srcEvent.changedTouches ? e.srcEvent.changedTouches : e.pointers;
           pointerDeg = -ui.getDegrees(input[0], dial[0]);
           relativeDeg = pointerDeg - deg;
@@ -435,20 +481,21 @@
             transitionDuration: '0s'
           });
           k = _updateColorByDeg(l, rotationDeg, n);
+          setColor(k.color, false, true);
           lastDeg = rotationDeg;
           $scope.$apply();
         })
-        .on('panend pancancel', function() {
-          d = n*(k+1);
-          window.console.log('>> d', n, k, d);
-          $scope.ringDeg = d; //lastDeg;
+        .on('panend pancancel', function panend() {
+          d = n*(k.key+1);
+          $scope.ringDeg = d;
           ring.css({
             transitionDuration: ''
           });
+          // setColor(k.color, false, true); //$scope.preferences.useHash);
           $scope.$apply();
         });
 
-        $scope.saveColor = function(color){
+        $scope.saveColor = function saveColor(color){
           var index = _.findIndex($scope.myColors, function(item){
             return item === color;
           });
@@ -456,11 +503,12 @@
             $scope.myColors.splice(index, 1);
           } else {
             $scope.myColors.push(color);
+            $scope.doIt(color);
           }
           storage.save('tanuki-colors', $scope.myColors);
         };
 
-        $scope.shareColors = function(){
+        $scope.shareColors = function shareColors(){
           var colors = '';
           _.each($scope.myColors, function(color){
             colors += '\n' + color + '\n';
@@ -468,21 +516,13 @@
           window.location.href = 'mailto:?subject=Colors&body='+encodeURIComponent(colors);
         };
 
-        $scope.isSaved = function(color){
+        $scope.isSaved = function isSaved(color){
           return _.find($scope.myColors, function(item){
             return item === color;
           });
         };
 
-        $scope.loadColor = function(color){
-          if($scope.preferences.useHash) {
-            window.location.hash = color.toLowerCase().replace('#', '#/');
-          } else {
-            doIt(color);
-          }
-        };
-
-        $scope.setClasses = function(color, test, affectText){
+        $scope.setClasses = function setClasses(color, test, affectText){
           if(color) {
             var classes = [];
             if(affectText) {
@@ -498,23 +538,6 @@
           }
         };
 
-        // var getHashColor = function(color) {
-        //     if(color && (color.match('^[0-9A-Fa-f]{3}$') || color.match('^[0-9A-Fa-f]{6}$'))) {
-        //         color = '#' + color;
-        //     } else {
-        //         color = false;
-        //     }
-        //     doIt(color);
-        // };
-        //
-        // getHashColor();
-
-        $scope.hash = window.location.hash ? window.location.hash.replace('/', '') : '';
-
-        $scope.$watch('hash', function (color) {
-          doIt(color);
-        });
-
         $scope.$watch('tuner', function(n, o){
           if(n && n !== o) {
             n.hex = colors.rgbObjToHex(n, true);
@@ -525,7 +548,7 @@
 
         $scope.$watch('colorSteps', function (n, o) {
           if(n && n !== o) {
-            doIt($scope.color);
+            $scope.doIt($scope.color);
           }
         });
 
@@ -533,10 +556,13 @@
           if(n && o && n !== o) {
             $scope.savePrefs = n;
             if((n.mode !== o.mode) || (n.allowBW !== o.allowBW)) {
-              doIt($scope.color);
+              $scope.doIt($scope.color);
             }
             if((n.tweeks.florix.shaadik !== o.tweeks.florix.shaadik)) {
               $scope.kulra = _lum(n.tweeks.florix.shaadik, 255);
+            }
+            if((n.useHash !== o.useHash)) {
+              setColor($scope.color, n.useHash, !n.useHash);
             }
           }
         }, true);
@@ -547,18 +573,16 @@
           }
         }, 500), true);
 
-        $document.on('keyup', function(e){
-          if(e.which === 32){ // spacebar
-              doIt();
+        window.onpopstate = function(event) {
+          var color = getColorFromHash();
+          if(colors.isValidHex(color)) {
+            $scope.doIt(color);
+            // setColor(color, true, false);
           }
-          if(e.which === 27){ // esc
-            $scope.showMenu = false;
-            $scope.showSliders = false;
-            $scope.preferences.showFavs = false;
-            $scope.preferences.showHistory = false;
-            $scope.$apply();
-          }
-        });
+        };
+
+        init();
+
     }]);
 
 })(window.angular, window._, window.Hammer);

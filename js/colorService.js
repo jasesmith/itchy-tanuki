@@ -63,6 +63,10 @@
       return colorObj.hex;
     };
 
+    var isValidHex = function(color) {
+        return (color && color.match(/^#(?:[0-9a-f]{3}){1,2}$/i)) ? true : false;
+    };
+
     var toRGB = function(color) {
       var colorObj = _cache(color);
       if (colorObj.rgb) {
@@ -248,6 +252,7 @@
     return {
       rgbObjToHex: rgbObjToHex,
       toHex: toHex,
+      isValidHex: isValidHex,
       toRGB: toRGB,
       toHSL: toHSL,
       hslToHex: hslToHex,

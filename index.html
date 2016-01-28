@@ -19,12 +19,13 @@
 
             <div class="workspace mode-{{mode.name}}" ng-class="{'fav-blocks': preferences.showFavs}">
 
-                <main class="main" ng-class="{'always-show-hex': preferences.alwaysShowHex || preferences.showFavs, 'menuActive':showMenu, 'slidersActive':showSliders, 'historyActive':preferences.showHistory}">
+                <main class="main" ng-class="{'always-show-hex': preferences.alwaysShowHex, 'menuActive':showMenu, 'slidersActive':showSliders, 'historyActive':preferences.showHistory}">
 
                   <div class="palette top" as-sortable="sortableOptions" ng-model="myColors">
-                    <div class="color-brick" ng-repeat="c in myColors" ng-class="setClasses(c, color, true)" ng-style="{'background': c}" tap="loadColor(c)" as-sortable-item>
-                      <div tap="loadColor(c)" as-sortable-item-handle></div>
-                      <span class="hex">{{c}}</span>
+                    <div class="color-brick" ng-repeat="c in myColors" ng-class="setClasses(c, color, true)" ng-style="{'background': c}" as-sortable-item>
+                      <div tap="doIt(c)" as-sortable-item-handle></div>
+                      <!-- <span>{{c}}</span> -->
+                      <a class="hex" href="/{{c}}">{{c}}</a>
                       <div class="manage ghost" tap="saveColor(c)"><fa name="minus-circle" size="large"></fa></div>
                     </div>
                   </div>
@@ -32,6 +33,9 @@
                   <div class="controls top hex-font">
                     <div class="flex-1" ng-class="{'fg-active': showMenu}">
                       <b tap="showMenu = !showMenu;showSliders=false"><fa name="heart" size="large" fw ng-show="preferences.showFavs"></fa> ITCHY TANUKI <span class="ghost" ng-show="preferences.showFavs">FAVORITES</span></b>
+                    </div>
+                    <div tap="preferences.useHash = !preferences.useHash" ng-show="!preferences.showFavs">
+                      <fa name="hashtag" ng-class="{'ghost': !preferences.useHash}"></fa>
                     </div>
                     <div tap="cycleModes(mode.name)" ng-show="!preferences.showFavs"><fa name="{{mode.icon}}" size="large" fw></fa></div>
                     <div tap="shareColors()" ng-show="preferences.showFavs"><fa name="send" size="large" fw></fa></div>
@@ -47,8 +51,8 @@
 
                         <div class="color-ring-outer">
                           <div class="color-ring" ng-style="setRingRotation()">
-                            <div ng-repeat="c in alternates track by $index" xng-class="setRotationClasses($index)" ng-style="setRotation($index)">
-                              <div class="color-brick" tap="loadColor(c)" ng-class="setClasses(c, color, false)" ng-style="{'backgroundColor': c}">
+                            <div ng-repeat="c in shades track by $index" ng-style="setRotation($index)">
+                              <div class="color-brick" tap="doIt(c)" ng-class="setClasses(c, color, false)" ng-style="{'backgroundColor': c}">
                                 <!-- <span class="hex" ng-if="!$last && mode.name !== 'tanuki'">{{c}}</span> -->
                               </div>
                             </div>
@@ -57,7 +61,7 @@
 
                         <div class="color-info flex-column hex-font" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}">
                           <div tap="saveColor(tuner.hex)"><fa name="{{(isSaved(tuner.hex) ? 'heart':'heart-o')}}" size="4" fw></fa></div>
-                          <h1><a href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
+                          <h1><a class="hex" href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
                           <div class="refresh" tap="doIt()"><fa name="refresh" size="3" fw></fa></div>
                         </div>
 
@@ -99,7 +103,7 @@
                           <div class="flex-1" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'padding':'1em 0','background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}" tap="setNewColor(tuner)">
                             <fa name="check" size="large" fw ng-class="{'vapor': tuner.hex === color}"></fa>
                           </div>
-                          <div class="flex-1" ng-class="setClasses(color, null, true)" ng-style="{'padding':'1em 0','background': color}" tap="loadColor(color)">
+                          <div class="flex-1" ng-class="setClasses(color, null, true)" ng-style="{'padding':'1em 0','background': color}" tap="doIt(color)">
                             <fa name="undo trans" size="large" fw ng-class="{'vapor': tuner.hex === color}"></fa>
                           </div>
                         </div>
@@ -177,19 +181,19 @@
                         <fa name="github" size="2" fw></fa>
                         <div>View on GitHub</div>
                       </div>
-                      <!--
-                      <div class="ui-fun" tap="preferences.useHash = !preferences.useHash">
+
+                      <!-- <div class="ui-fun" tap="preferences.useHash = !preferences.useHash">
                         <fa name="hashtag" size="2" fw ng-class="{'ghost': !preferences.useHash}"></fa>
                         <div>Use URLs</div>
-                      </div>
-                      -->
+                      </div> -->
+
                       <div class="panel-toggle" tap="showMenu = !showMenu"><fa name="times" size="2" fw></fa></div>
                     </div>
 
                   <!-- </section> -->
 
                   <div class="palette bottom history">
-                      <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" tap="loadColor(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
+                      <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" tap="doIt(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
                         <!-- <span class="hex">{{c}}</span> -->
                       </div>
                       <div class="history-toggle" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false"><fa name="{{(preferences.showHistory?'times':'history')}}" size="3" fw></fa></div>

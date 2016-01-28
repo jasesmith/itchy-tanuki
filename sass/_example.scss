@@ -323,14 +323,15 @@ html, body, .wrapper {
       }
     }
   }
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
   .hex-font {
     font-family: "DIN Alternate", monospace;
     // text-transform: uppercase;
   }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .ui-fun {
@@ -433,73 +434,126 @@ html, body, .wrapper {
   text-align: center;
   line-height: 0;
   font-size: 2.1vmax;
-  // padding: 1em 0;
-  // flex: 1 0 auto;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  z-index: 1;
   cursor: pointer;
-  // transition: all $minor-timing ease-out;
   .hex {
-    // position: absolute;
-    // top: 50%;
-    // left: 50%;
-    // transform: translate(-50%, -50%);
-    color: transparent;
-    padding: .75em .35em;
-    // transition: $minor-timing ease-out;
-    border-radius: 0 0 .35em .35em;
-  }
-  .manage {
-    font-size: 0;
     position: absolute;
-    top: 1em;
-    right: 1em;
-    // transition: $major-timing ease-in-out;
-  }
-  &:hover {
-    // z-index: 10;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0;
+    color: transparent;
+    line-height: 1;
+    z-index: 1;
+    transition: opacity $minor-timing ease-out;
+    border-radius: .35em;
+    opacity: 0;
+    &::before,
+    &::after {
+    }
   }
   &.current {
-    z-index: 2;
     .hex {
       background: $dark;
       color: $light;
-      position: relative;
+      padding: 1vmin;
+      font-size: .7em;
+      opacity: 1;
       box-shadow: 0 0 0 .2em $light;
       &::before,
       &::after {
         content: '';
         position: absolute;
         top: 100%;
+        transition: $minor-timing ease-out;
+      }
+      &::before {
+        border-style: solid;
+        border-color: $light transparent transparent transparent;
+      }
+      &::after {
+        top: calc(100% - 1px);
+        border-style: solid;
+        border-color: $dark transparent transparent transparent;
+      }
+    }
+    // the middles
+    &:nth-child(n+4):nth-last-child(n+4) .hex {
+      left: 50%;
+      transform: translate(-50%, -50%);
+      &::before,
+      &::after {
         left: 50%;
         transform: translateX(-50%);
       }
       &::before {
-        border: .7em solid transparent;
-        border-top-color: $light;
+        border-width: 1.2em 1em 0 1em;
       }
       &::after {
-        top: calc(100% - 1px);
-        border: .5em solid transparent;
-        border-top-color: $dark;
+        border-width: .8em .9em 0 .9em;
+      }
+    }
+    // left side
+    &:nth-child(n-3) .hex {
+      left: 50%;
+      transform: translate(-10%, -50%);
+      &::before,
+      &::after {
+        left: 10%;
+        transform: translateX(0%);
+      }
+      &::before {
+        border-width: 1.2em 1.5em 0 .1em;
+      }
+      &::after {
+        border-width: .8em 1.2em 0 .3em;
+      }
+    }
+    // right side
+    &:nth-last-child(-n+3) .hex {
+      left: 40%;
+      transform: translate(-90%, -50%);
+      &::before,
+      &::after {
+        left: 90%;
+        transform: translateX(-100%);
+      }
+      &::before {
+        border-width: 1.2em .1em 0 1.5em;
+      }
+      &::after {
+        border-width: .8em .3em 0 1.2em;
+      }
+    }
+    // single and dragging
+    &:only-child .hex {
+      left: 50%;
+      transform: translate(-50%, -50%);
+      &::before,
+      &::after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      &::before {
+        border-width: 1em 1em 0 1em;
+      }
+      &::after {
+        border-width: .75em .75em 0 .75em;
       }
     }
   }
-  // &.ui-sortable-helper {
-  //   transform: rotate(-3deg);
-  //   box-shadow: 0 .5em 1em -.35em rgba(#000, .65);
-  //   z-index: 50;
-  // }
-  // &.ui-sortable-placeholder::after {
-  //   content: '-------';
-  //   display: inline-block;
-  //   font-size: 85%;
-  //   padding: .5em 1em;
-  // }
+
+  .manage {
+    font-size: 0;
+    position: absolute;
+    top: 1vmin;
+    right: 1vmin;
+  }
+
   [as-sortable-item-handle] {
     position: absolute;
     top: 0;
@@ -510,18 +564,18 @@ html, body, .wrapper {
 }
 
 .main:not(.always-show-hex) {
-  .color-ring {
-    .color-brick {
-      .hex, .manage {font-size: 0;}
-      &:hover .hex {font-size: 1em;}
-    }
+  .hex {
+    display: none;
   }
-    // &.current .hex,
-    // &:hover .hex {font-size: 1em;}
-  // .color-brick {
-  //   &:hover .hex {color: inherit;}
+  // .color-ring {
+  //   .color-brick {
+  //     .hex, .manage {font-size: 0;}
+  //     &:hover .hex {font-size: 1em;}
+  //   }
   // }
-  .palette .color-brick.current .hex {font-size: 1em;}
+  .palette .color-brick.current .hex {
+    // font-size: .7em;
+  }
 }
 
 .workspace {
@@ -548,16 +602,24 @@ html, body, .wrapper {
           box-shadow: 1.5em 0 2.5em -2em rgba(#000, .65);
           &.current {
             &::after {
-              content: '';
+              content: '\f058';
+              font-family: FontAwesome;
+              font-size: 4vmin;
               position: absolute;
               top: 1em;
               left: 50%;
               transform: translateX(-50%);
-              width: 1em;
-              height: 1em;
-              line-height: 0;
-              border-radius: 1em;
-              background: currentColor;
+
+              // content: '';
+              // position: absolute;
+              // top: 1em;
+              // left: 50%;
+              // transform: translateX(-50%);
+              // width: 1em;
+              // height: 1em;
+              // line-height: 0;
+              // border-radius: 1em;
+              // background: currentColor;
             }
             .hex {
               background: none;
@@ -669,13 +731,21 @@ html, body, .wrapper {
       .color-brick {
         justify-content: flex-end;
         flex: 0 0 20%;
-        font-size: 1.5vmax;
+        font-size: 1.3vmax;
         &:not(.current) .hex {
           color: inherit;
+          opacity: 1;
+        }
+        &.current .hex {
+          margin: -1vmin;
         }
         .hex {
-          transform: translateY(-25%);
-          border-radius: .35em;
+          bottom: 2vmin;
+          left: 2vmin;
+          transform: translate(0, 0);
+          pointer-events: none;
+          border-radius: 1em;
+          font-size: 1em;
           &::before,
           &::after {
             display: none;
@@ -684,6 +754,7 @@ html, body, .wrapper {
       }
       .manage {
         font-size: 1em;
+        padding: .5em;
       }
     }
     .canvas {
