@@ -472,9 +472,9 @@
           pointerDeg = -ui.getDegrees(input[0], dial[0]);
           relativeDeg = pointerDeg - deg;
           rotationDeg = lastDeg + relativeDeg;
-          if(isNaN(rotationDeg)) {rotationDeg = lastDeg;}
-          if(rotationDeg < 0) {rotationDeg = ui.maxDegrees;}
-          if(rotationDeg > ui.maxDegrees) {rotationDeg = 0;}
+          rotationDeg = isNaN(rotationDeg) ? lastDeg : rotationDeg;
+          rotationDeg = rotationDeg <= 0 ? ui.maxDegrees-Math.abs(rotationDeg) : rotationDeg;
+          rotationDeg = rotationDeg >= ui.maxDegrees ? rotationDeg-ui.maxDegrees :  rotationDeg;
           deg = pointerDeg;
           ring.css({
             transform: 'rotate(-'+ rotationDeg +'deg) translateZ(0)',

@@ -171,13 +171,10 @@ p {
 .as-sortable-placeholder {
   width: auto !important;
   height: auto !important;
-  display: flex !important;
   box-shadow: 0 0 0 0.3em #FFF inset; }
   .as-sortable-placeholder::after {
     content: '';
-    display: inline-block;
-    font-size: 85%;
-    padding: .5em 1em; }
+    display: inline-block; }
 
 .as-sortable-drag {
   transform: rotate(-3deg);
@@ -251,7 +248,7 @@ html, body, .wrapper {
     flex: 1;
     position: relative;
     z-index: 1;
-    font-size: 1.2vmin;
+    font-size: 1vmin;
     font-family: "DIN Alternate", monospace; }
     .workspace .main h1 {
       font-weight: 300;
@@ -284,7 +281,7 @@ html, body, .wrapper {
     justify-content: center;
     align-items: center;
     z-index: 1;
-    flex: 4;
+    flex: 5;
     transition: 1.5s ease-in-out; }
   .workspace .dial {
     position: absolute;
@@ -295,7 +292,7 @@ html, body, .wrapper {
     overflow: hidden;
     flex: none; }
     .workspace .dial.fancy {
-      background-image: radial-gradient(circle at 50% 60%, #fff, #000);
+      background-image: radial-gradient(circle at 50% 55%, #fff, #000);
       mix-blend-mode: overlay; }
   .workspace .panel {
     font-size: 2vh;
@@ -396,11 +393,8 @@ html, body, .wrapper {
   .workspace .palette {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     z-index: 3;
-    flex: 1;
-    min-height: 10em;
-    color: #FFF;
+    flex: 0 0 20vh;
     background: #000 repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1) 0.5em, transparent 0.5em, transparent 1em); }
     .workspace .palette.bottom {
       position: absolute;
@@ -408,11 +402,19 @@ html, body, .wrapper {
       right: 0;
       bottom: 0;
       left: 0;
+      height: 15vh;
       transform: translate(0, 100%) translateZ(0);
       transition: transform 0.3s cubic-bezier(0.85, -1, 0.15, 1.6);
       border-top: 1em solid; }
-      .workspace .palette.bottom .hex {
-        color: inherit; }
+    .workspace .palette.top .color-brick {
+      font-size: 2.1vmax; }
+      .workspace .palette.top .color-brick.current::after {
+        content: '\f08a';
+        font-family: FontAwesome;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); }
   .workspace .controls {
     position: relative;
     flex: 0 0 auto;
@@ -517,7 +519,6 @@ a {
   position: relative;
   text-align: center;
   line-height: 0;
-  font-size: 2.1vmax;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -526,75 +527,33 @@ a {
   cursor: pointer; }
   .color-brick .hex {
     position: absolute;
-    bottom: 50%;
+    bottom: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
     font-size: 0;
     color: transparent;
     line-height: 1;
     z-index: 1;
     transition: opacity 0.3s ease-out;
-    border-radius: .35em;
     opacity: 0; }
   .color-brick.current .hex {
-    background: #363639;
-    color: #FFF;
+    background: #FFF;
+    color: #363639;
     padding: 1vmin;
-    font-size: .7em;
-    opacity: 1;
-    box-shadow: 0 0 0 0.2em #FFF; }
-    .color-brick.current .hex::before, .color-brick.current .hex::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      transition: 0.3s ease-out; }
-    .color-brick.current .hex::before {
-      border-style: solid;
-      border-color: #FFF transparent transparent transparent; }
-    .color-brick.current .hex::after {
-      top: calc(100% - 1px);
-      border-style: solid;
-      border-color: #363639 transparent transparent transparent; }
+    font-size: 1em;
+    opacity: 1; }
   .color-brick.current:nth-child(n+4):nth-last-child(n+4) .hex {
     left: 50%;
-    transform: translate(-50%, -50%); }
-    .color-brick.current:nth-child(n+4):nth-last-child(n+4) .hex::before, .color-brick.current:nth-child(n+4):nth-last-child(n+4) .hex::after {
-      left: 50%;
-      transform: translateX(-50%); }
-    .color-brick.current:nth-child(n+4):nth-last-child(n+4) .hex::before {
-      border-width: 1.2em 1em 0 1em; }
-    .color-brick.current:nth-child(n+4):nth-last-child(n+4) .hex::after {
-      border-width: .8em .9em 0 .9em; }
+    transform: translate(-50%, 0%); }
   .color-brick.current:nth-child(n-3) .hex {
-    left: 50%;
-    transform: translate(-10%, -50%); }
-    .color-brick.current:nth-child(n-3) .hex::before, .color-brick.current:nth-child(n-3) .hex::after {
-      left: 10%;
-      transform: translateX(0%); }
-    .color-brick.current:nth-child(n-3) .hex::before {
-      border-width: 1.2em 1.5em 0 .1em; }
-    .color-brick.current:nth-child(n-3) .hex::after {
-      border-width: .8em 1.2em 0 .3em; }
+    left: 0%;
+    transform: translate(0%, 0%); }
   .color-brick.current:nth-last-child(-n+3) .hex {
-    left: 40%;
-    transform: translate(-90%, -50%); }
-    .color-brick.current:nth-last-child(-n+3) .hex::before, .color-brick.current:nth-last-child(-n+3) .hex::after {
-      left: 90%;
-      transform: translateX(-100%); }
-    .color-brick.current:nth-last-child(-n+3) .hex::before {
-      border-width: 1.2em .1em 0 1.5em; }
-    .color-brick.current:nth-last-child(-n+3) .hex::after {
-      border-width: .8em .3em 0 1.2em; }
+    left: 100%;
+    transform: translate(-100%, 0%); }
   .color-brick.current:only-child .hex {
     left: 50%;
-    transform: translate(-50%, -50%); }
-    .color-brick.current:only-child .hex::before, .color-brick.current:only-child .hex::after {
-      left: 50%;
-      transform: translateX(-50%); }
-    .color-brick.current:only-child .hex::before {
-      border-width: 1em 1em 0 1em; }
-    .color-brick.current:only-child .hex::after {
-      border-width: .75em .75em 0 .75em; }
+    transform: translate(-50%, 0%); }
   .color-brick .manage {
     font-size: 0;
     position: absolute;
@@ -613,14 +572,14 @@ a {
 .workspace.mode-florix .canvas::after {
   content: '';
   position: absolute;
-  top: 0;
+  top: -.1em;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
   border-style: solid;
   border-color: #363639 transparent transparent transparent;
-  border-width: 2em 2em 0 2em; }
+  border-width: 3vw 3vw 0 3vw; }
 .workspace.mode-florix .color-info {
   box-shadow: 0 .5em 5em -1em #000; }
 .workspace.mode-florix .color-ring > div .color-brick {
@@ -684,27 +643,32 @@ a {
   width: 100vw;
   transition-duration: 1.5s;
   border-radius: 0 !important; }
-.workspace.fav-blocks .palette .color-brick {
-  justify-content: flex-end;
-  flex: 0 0 20%;
-  font-size: 1.3vmax; }
-  .workspace.fav-blocks .palette .color-brick:not(.current) .hex {
-    color: inherit;
-    opacity: 1; }
-  .workspace.fav-blocks .palette .color-brick.current .hex {
-    margin: -1vmin; }
-  .workspace.fav-blocks .palette .color-brick .hex {
-    bottom: 2vmin;
-    left: 2vmin;
-    transform: translate(0, 0);
-    pointer-events: none;
-    border-radius: 1em;
-    font-size: 1em; }
-    .workspace.fav-blocks .palette .color-brick .hex::before, .workspace.fav-blocks .palette .color-brick .hex::after {
+.workspace.fav-blocks .palette {
+  flex-wrap: wrap;
+  flex: 1 1 20vh; }
+  .workspace.fav-blocks .palette .color-brick {
+    justify-content: flex-end;
+    flex: 0 0 20%; }
+    .workspace.fav-blocks .palette .color-brick:not(.current) .hex {
+      color: inherit;
+      opacity: 1; }
+    .workspace.fav-blocks .palette .color-brick.current::after {
       display: none; }
-.workspace.fav-blocks .palette .manage {
-  font-size: 1em;
-  padding: .5em; }
+    .workspace.fav-blocks .palette .color-brick.current .hex {
+      margin: -1vmin; }
+    .workspace.fav-blocks .palette .color-brick .hex {
+      display: block;
+      top: calc(100% - 2vmin);
+      left: 2vmin;
+      transform: translate(0, -100%);
+      pointer-events: none;
+      border-radius: 1em;
+      font-size: 1em; }
+      .workspace.fav-blocks .palette .color-brick .hex::before, .workspace.fav-blocks .palette .color-brick .hex::after {
+        display: none; }
+  .workspace.fav-blocks .palette .manage {
+    font-size: 1em;
+    padding: .5em; }
 .workspace.fav-blocks .canvas {
   flex: 0 0 auto; }
   .workspace.fav-blocks .canvas .color-ring > div {
@@ -805,7 +769,7 @@ a {
 
 @media screen and (max-width: 40em), screen and (orientation: portrait) {
   .workspace .main {
-    font-size: 1.2vmax; } }
+    font-size: 1vmax; } }
 @media screen and (-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi) {
   .menu,
   .sliders > div:not(.gap) {

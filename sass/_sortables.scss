@@ -11,13 +11,13 @@
 .as-sortable-placeholder {
   width: auto !important;
   height: auto !important;
-  display: flex !important;
+  // display: flex !important;
   box-shadow: 0 0 0 .3em $light inset;
   &::after {
     content: ''; //'-------';
     display: inline-block;
-    font-size: 85%;
-    padding: .5em 1em;
+    // font-size: 85%;
+    // padding: .5em 1em;
   }
 }
 

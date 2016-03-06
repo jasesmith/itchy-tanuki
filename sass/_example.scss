@@ -76,7 +76,7 @@ html, body, .wrapper {
     flex: 1;
     position: relative;
     z-index: 1;
-    font-size: 1.2vmin;
+    font-size: 1vmin;
     font-family: "DIN Alternate", monospace;
     h1 {
       font-weight: 300;
@@ -121,7 +121,7 @@ html, body, .wrapper {
     justify-content: center;
     align-items: center;
     z-index: 1;
-    flex: 4;
+    flex: 5;
     transition: $major-timing ease-in-out;
   }
   .dial {
@@ -132,11 +132,8 @@ html, body, .wrapper {
     left: 0;
     overflow: hidden;
     flex: none;
-    // display: flex;
-    // flex-direction: row;
-    // transform: translateZ(0);
     &.fancy {
-      background-image: radial-gradient(circle at 50% 60%, #fff, #000);
+      background-image: radial-gradient(circle at 50% 55%, #fff, #000);
       mix-blend-mode: overlay;
     }
   }
@@ -148,17 +145,15 @@ html, body, .wrapper {
     flex-direction: row;
     position: absolute;
     user-select: none;
-    top: 0; //1em;
-    right: 0; //1em;
-    bottom: 0; //1em;
-    left: 0; //1em;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     transform: translate(0, -110%) translateZ(0);
     transition: transform $minor-timing $timing-func;
-    // border-radius: .3em;
     > div {
       position: relative;
       z-index: 0;
-      // border-radius: .3em;
     }
     input[type=range] {
       margin-top: 0;
@@ -168,7 +163,7 @@ html, body, .wrapper {
     flex-wrap: wrap;
     background-color: rgba(#000, .65);
     color: $light;
-    box-shadow: 0 0 0 .3em inset; // 0 0 0 .2em, 0 0 1em 0 #000;
+    box-shadow: 0 0 0 .3em inset;
     > div:not(.panel-toggle) {
       flex: 0 0 calc(100%/3);
       display: flex;
@@ -180,7 +175,6 @@ html, body, .wrapper {
       border-radius: .3em;
       text-transform: capitalize;
       &:hover {
-        // background: rgba($light, .1);
         z-index: 2;
       }
     }
@@ -201,9 +195,6 @@ html, body, .wrapper {
     pointer-events: none;
     > div {
       flex: 1;
-      &.gap {
-        // flex: 2;
-      }
       &:not(.gap) {
         min-width: 12em;
         max-width: 18em;
@@ -232,9 +223,6 @@ html, body, .wrapper {
     .panel-toggle {
       background: $light;
       color: $dark;
-      // position: absolute;
-      // top: 0;
-      // right: 100%;
       padding: .7em;
       margin: -.75em -.75em -1.05em 1em;
     }
@@ -265,11 +253,8 @@ html, body, .wrapper {
   .palette {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     z-index: 3;
-    flex: 1;
-    min-height: 10em;
-    color: $light;
+    flex: 0 0 20vh;
     background:  #000 repeating-linear-gradient(
       -45deg,
       rgba($light, .1),
@@ -277,22 +262,29 @@ html, body, .wrapper {
       transparent .5em,
       transparent 1em
     );
-    .hex {
-      // transform: translateY(100%);
-    }
-    &.top {
-    }
     &.bottom {
       position: absolute;
-      top: auto; //1em;
-      right: 0; //1em;
-      bottom: 0; //1em;
-      left: 0; //1em;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 15vh;
       transform: translate(0, 100%) translateZ(0);
       transition: transform $minor-timing $timing-func;
       border-top: 1em solid;
-      .hex {
-        color: inherit;
+    }
+    &.top .color-brick {
+      font-size: 2.1vmax;
+      &.current {
+        // box-shadow: 0 0 0 .2em inset;
+        &::after {
+          content: '\f08a';
+          font-family: FontAwesome;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
       }
     }
   }
@@ -318,14 +310,10 @@ html, body, .wrapper {
       &.active {
         color: $active;
       }
-      span {
-        // display: none;
-      }
     }
   }
   .hex-font {
     font-family: "DIN Alternate", monospace;
-    // text-transform: uppercase;
   }
 }
 
@@ -377,17 +365,6 @@ a {
   transform-origin: 50% 50%;
   line-height: 0;
   transition: transform $minor-timing ease-out;
-  // &::after {
-  //   content: '';
-  //   position: absolute;
-  //   top: -50%;
-  //   left: 50%;
-  //   transform: translateX(-50%);
-  //   width: 1em;
-  //   height: 1em;
-  //   background: red;
-  //   z-index: 50;
-  // }
   > div {
     display: flex;
     align-items: flex-start;
@@ -433,7 +410,6 @@ a {
   position: relative;
   text-align: center;
   line-height: 0;
-  font-size: 2.1vmax;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -442,108 +418,109 @@ a {
   cursor: pointer;
   .hex {
     position: absolute;
-    bottom: 50%;
+    bottom: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
     font-size: 0;
     color: transparent;
     line-height: 1;
     z-index: 1;
     transition: opacity $minor-timing ease-out;
-    border-radius: .35em;
     opacity: 0;
-    &::before,
-    &::after {
-    }
   }
   &.current {
     .hex {
-      background: $dark;
-      color: $light;
+      background: $light; //rgba(#000, .65);
+      color: $dark; //$light;
       padding: 1vmin;
-      font-size: .7em;
+      font-size: 1em;
       opacity: 1;
-      box-shadow: 0 0 0 .2em $light;
-      &::before,
-      &::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        transition: $minor-timing ease-out;
-      }
-      &::before {
-        border-style: solid;
-        border-color: $light transparent transparent transparent;
-      }
-      &::after {
-        top: calc(100% - 1px);
-        border-style: solid;
-        border-color: $dark transparent transparent transparent;
-      }
+      // &::before,
+      // &::after {
+      //   content: '';
+      //   position: absolute;
+      //   top: 100%;
+      //   transition: $minor-timing ease-out;
+      // }
+      // &::before {
+      //   border-style: solid;
+      //   border-color: $light transparent transparent transparent;
+      //   border-width: 3vw;
+      //   border-bottom-width: 0;
+      // }
+      // &::after {
+      //   top: calc(100% - 1px);
+      //   border-style: solid;
+      //   border-color: $dark transparent transparent transparent;
+      //   border-width: 3vw;
+      //   border-bottom-width: 0;
+      // }
     }
     // the middles
     &:nth-child(n+4):nth-last-child(n+4) .hex {
       left: 50%;
-      transform: translate(-50%, -50%);
-      &::before,
-      &::after {
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      &::before {
-        border-width: 1.2em 1em 0 1em;
-      }
-      &::after {
-        border-width: .8em .9em 0 .9em;
-      }
+      transform: translate(-50%, 0%);
+      // &::before,
+      // &::after {
+      //   left: 50%;
+      //   transform: translateX(-50%);
+      //   border-bottom-width: 0;
+      // }
+      // &::before {
+      //   border-width: 3vw 3vw 0 3vw;
+      // }
+      // &::after {
+      // }
     }
     // left side
     &:nth-child(n-3) .hex {
-      left: 50%;
-      transform: translate(-10%, -50%);
-      &::before,
-      &::after {
-        left: 10%;
-        transform: translateX(0%);
-      }
-      &::before {
-        border-width: 1.2em 1.5em 0 .1em;
-      }
-      &::after {
-        border-width: .8em 1.2em 0 .3em;
-      }
+      left: 0%;
+      transform: translate(0%, 0%);
+      // &::before,
+      // &::after {
+      //   left: 10%;
+      //   transform: translateX(0%);
+      //   border-left-width: 0;
+      // }
+      // &::before {
+      //   border-width: 1.2em 1.5em 0 .1em;
+      // }
+      // &::after {
+      //   // border-width: .8em 1.2em 0 .3em;
+      // }
     }
     // right side
     &:nth-last-child(-n+3) .hex {
-      left: 40%;
-      transform: translate(-90%, -50%);
-      &::before,
-      &::after {
-        left: 90%;
-        transform: translateX(-100%);
-      }
-      &::before {
-        border-width: 1.2em .1em 0 1.5em;
-      }
-      &::after {
-        border-width: .8em .3em 0 1.2em;
-      }
+      left: 100%;
+      transform: translate(-100%, 0%);
+      // &::before,
+      // &::after {
+      //   left: 100%;
+      //   transform: translateX(-100%);
+      //   border-right-width: 0;
+      // }
+      // &::before {
+      //   border-width: 1.2em .1em 0 1.5em;
+      // }
+      // &::after {
+      //   // border-width: .8em 0 0 1.2em;
+      // }
     }
     // single and dragging
     &:only-child .hex {
       left: 50%;
-      transform: translate(-50%, -50%);
-      &::before,
-      &::after {
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      &::before {
-        border-width: 1em 1em 0 1em;
-      }
-      &::after {
-        border-width: .75em .75em 0 .75em;
-      }
+      transform: translate(-50%, 0%);
+      // &::before,
+      // &::after {
+      //   left: 50%;
+      //   transform: translateX(-50%);
+      // }
+      // &::before {
+      //   border-width: 1em 1em 0 1em;
+      // }
+      // &::after {
+      //   // border-width: .75em .75em 0 .75em;
+      // }
     }
   }
 
@@ -583,14 +560,14 @@ a {
     .canvas::after {
       content: '';
       position: absolute;
-      top: 0;
+      top: -.1em;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
       border-style: solid;
       border-color: $dark transparent transparent transparent;
-      border-width: 2em 2em 0 2em;
+      border-width: 3vw 3vw 0 3vw;
     }
     .color-info {
       box-shadow: 0 .5em 5em -1em #000;
@@ -728,21 +705,29 @@ a {
       border-radius: 0 !important;
     }
     .palette {
+      flex-wrap: wrap;
+      flex: 1 1 20vh;
       .color-brick {
         justify-content: flex-end;
         flex: 0 0 20%;
-        font-size: 1.3vmax;
+        // font-size: 1.3vmax;
         &:not(.current) .hex {
           color: inherit;
           opacity: 1;
         }
-        &.current .hex {
-          margin: -1vmin;
+        &.current {
+          &::after {
+            display: none;
+          }
+          .hex {
+            margin: -1vmin;
+          }
         }
         .hex {
-          bottom: 2vmin;
+          display: block;
+          top: calc(100% - 2vmin);
           left: 2vmin;
-          transform: translate(0, 0);
+          transform: translate(0, -100%);
           pointer-events: none;
           border-radius: 1em;
           font-size: 1em;
@@ -869,7 +854,7 @@ a {
 @media screen and (max-width: 40em), screen and (orientation: portrait) {
   .workspace {
     .main {
-      font-size: 1.2vmax;
+      font-size: 1vmax;
     }
     // .canvas {
     //   flex-direction: column;
