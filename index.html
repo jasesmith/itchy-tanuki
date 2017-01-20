@@ -1,228 +1,56 @@
 <!DOCTYPE html>
-<html ng-app="app" ng-controller="AppController">
-    <head>
-        <title>{{color}} &bull; Itchy Tanuki</title>
-        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" media="screen" charset="utf-8" />
-        <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8" />
-        <script src="bower_components/angular/angular.min.js"></script>
-        <script src="bower_components/underscore/underscore-min.js"></script>
-        <script src="bower_components/hammerjs/hammer.min.js"></script>
-        <script src="bower_components/ng-sortable/dist/ng-sortable.min.js"></script>
-        <script src="bower_components/angular-fontawesome/dist/angular-fontawesome.min.js"></script>
+<html ng-app="app" ng-controller="app">
+  <head>
+    <title>{{color}} &bull; Itchy Tanuki</title>
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8" />
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/hammerjs/hammer.min.js"></script>
+    <script src="bower_components/ng-sortable/dist/ng-sortable.min.js"></script>
+    <script src="bower_components/angular-fontawesome/dist/angular-fontawesome.min.js"></script>
 
-        <script src="js/app.js"></script>
-        <script src="js/colorService.min.js"></script>
-    </head>
-    <body>
+    <script src="js/app.js"></script>
+    <script src="js/color.service.min.js"></script>
+    <script src="js/storage.service.min.js"></script>
+    <script src="js/helpers.service.min.js"></script>
+  </head>
 
-        <div class="wrapper" ng-class="setClasses(color, null, true)">
+  <body class="mode-{{mode.name}}" ng-class="setStateClasses(preferences)">
 
-            <div class="workspace mode-{{mode.name}}" ng-class="{'fav-blocks': preferences.showFavs}">
+    <div class="favorites" ng-include="'partials/favorites.html'" as-sortable="sortableOptions" ng-model="myColors"></div>
 
-                <main class="main" ng-class="{'always-show-hex': preferences.alwaysShowHex, 'menuActive':showMenu, 'slidersActive':showSliders, 'historyActive':preferences.showHistory}">
+    <header class="controls" ng-include="'partials/controls.html'"></header>
 
-                  <div class="palette top" as-sortable="sortableOptions" ng-model="myColors">
-                    <div class="color-brick" ng-repeat="c in myColors" ng-class="setClasses(c, color, true)" ng-style="{'background': c}" as-sortable-item>
-                      <div tap="doIt(c)" as-sortable-item-handle></div>
-                      <!-- <span>{{c}}</span> -->
-                      <a class="hex" href="/{{c}}">{{c}}</a>
-                      <div class="manage ghost" tap="saveColor(c)"><fa name="minus-circle" size="large"></fa></div>
-                    </div>
-                  </div>
+    <main class="canvas" ng-include="'partials/canvas.html'" ng-style="{'background-color': color}"></main>
 
-                  <div class="controls top hex-font">
-                    <div class="flex-1" ng-class="{'fg-active': showMenu}">
-                      <b tap="showMenu = !showMenu;showSliders=false"><fa name="heart" size="large" fw ng-show="preferences.showFavs"></fa> ITCHY TANUKI <span class="ghost" ng-show="preferences.showFavs">FAVORITES</span></b>
-                    </div>
-                    <div tap="preferences.useHash = !preferences.useHash" ng-show="!preferences.showFavs">
-                      <fa name="hashtag" ng-class="{'ghost': !preferences.useHash}"></fa>
-                    </div>
-                    <div tap="cycleModes(mode.name)" ng-show="!preferences.showFavs"><fa name="{{mode.icon}}" size="large" fw></fa></div>
-                    <div tap="shareColors()" ng-show="preferences.showFavs"><fa name="send" size="large" fw></fa></div>
-                    <div tap="showSliders = !showSliders;showMenu=false" ng-class="{'fg-active': showSliders}" ng-show="!preferences.showFavs"><fa name="sliders" size="large" fw></fa></div>
-                    <div tap="preferences.showFavs = !preferences.showFavs;showMenu=false;showSliders=false;preferences.showHistory=false" ng-class="{'fg-active': preferences.showFavs}"><fa name="th" size="large" fw></fa></div>
-                  </div>
+    <aside class="sliders" ng-include="'partials/toolbox.html'"></aside>
 
-                  <!-- <section> -->
-                    <div class="canvas" ng-style="{'background-color': color}">
+    <aside class="menu" ng-include="'partials/menu.html'"></aside>
 
-                      <div class="dial" ng-class="{'fancy': preferences.fancy}"></div>
-                      <div class="color-display flex-column" ng-class="{'no-trans': preferences.tweeks[mode.name].quarble == 0}">
+    <footer class="history" ng-include="'partials/history.html'"></footer>
 
-                        <div class="color-ring-outer">
-                          <div class="color-ring" ng-style="setRingRotation()">
-                            <div ng-repeat="c in shades track by $index" ng-style="setRotation($index)">
-                              <div class="color-brick" tap="doIt(c)" ng-class="setClasses(c, color, false)" ng-style="{'backgroundColor': c}">
-                                <!-- <span class="hex" ng-if="!$last && mode.name !== 'tanuki'">{{c}}</span> -->
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+    <style>
+    .mode-tanuki .color-ring > div {
+      top: {{-preferences.tweeks.tanuki.flarp}}vmax;
+      right: {{-preferences.tweeks.tanuki.ichtzy}}%;
+      left: {{-preferences.tweeks.tanuki.ichtzy}}%;
+    }
 
-                        <div class="color-info flex-column hex-font" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}">
-                          <div tap="saveColor(tuner.hex)"><fa name="{{(isSaved(tuner.hex) ? 'heart':'heart-o')}}" size="4" fw></fa></div>
-                          <h1><a class="hex" href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
-                          <div class="refresh" tap="doIt()"><fa name="refresh" size="3" fw></fa></div>
-                        </div>
-
-                      </div>
-                    </div>
-
-                    <div class="panel sliders">
-
-                      <div class="flex-1 gap"></div>
-
-                      <div class="flex-1 flex-column">
-                        <div class="settings flex-auto">
-                          <div class="flex-row">
-                            <label for="fancy" class="flex-1"><span class="ghost">Fancy BG</span></label>
-                            <span><input type="checkbox" ng-model="preferences.fancy" id="fancy" data-on="" data-off="" /></span>
-                            <div class="panel-toggle" tap="showSliders = !showSliders"><fa name="times" size="2" fw></fa></div>
-                          </div>
-                        </div>
-
-                        <nav class="flex-auto flex-row button-bar">
-                          <div class="flex-1 button" tap="preferences.toolbox = 'color'" ng-class="{'active': preferences.toolbox === 'color'}"><fa name="tint" size="2" fw></fa></div>
-                          <div class="flex-1 button" tap="preferences.toolbox = 'display'" ng-class="{'active': preferences.toolbox === 'display'}"><fa name="wrench" size="2" fw></fa></div>
-                        </nav>
-
-                        <div class="settings flex-1" ng-show="preferences.toolbox === 'color'">
-                          <div>
-                            <label><span class="ghost">Red</span> {{tuner.r}} <br /><input type="range" ng-model="tuner.r" min="0" max="255" step="1" /></label>
-                            <label><span class="ghost">Green</span> {{tuner.g}} <br /><input type="range" ng-model="tuner.g" min="0" max="255" step="1" /></label>
-                            <label><span class="ghost">Blue</span> {{tuner.b}} <br /><input type="range" ng-model="tuner.b" min="0" max="255" step="1" /></label>
-                            <!-- <hr />
-                            <label><span class="ghost">Luminance</span> {{lum}} <br /><input type="range" ng-model="lum" min="0" max="255" step="1" /></label> -->
-                            <hr />
-                            <div><span class="ghost">Brightness</span> {{tuner.brightness}}</div>
-                            <div><span class="ghost">HEX</span> {{tuner.hex}}</div>
-                          </div>
-                        </div>
-
-                        <div class="flex-auto flex-row button-bar" ng-show="preferences.toolbox === 'color'">
-                          <div class="flex-1" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'padding':'1em 0','background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}" tap="setNewColor(tuner)">
-                            <fa name="check" size="large" fw ng-class="{'vapor': tuner.hex === color}"></fa>
-                          </div>
-                          <div class="flex-1" ng-class="setClasses(color, null, true)" ng-style="{'padding':'1em 0','background': color}" tap="doIt(color)">
-                            <fa name="undo trans" size="large" fw ng-class="{'vapor': tuner.hex === color}"></fa>
-                          </div>
-                        </div>
-
-                        <div class="settings flex-1" ng-show="preferences.toolbox === 'display'">
-                          <div ng-if="mode.name === 'tanuki'">
-                            <div class="flex-row">
-                              <label for="cappa" class="flex-1"><span class="ghost">Cappa</span> <!--{{(preferences.tweeks.tanuki.cappa?'On':'Off')}}--></label>
-                              <span><input type="checkbox" ng-model="preferences.tweeks.tanuki.cappa" id="cappa" data-on="" data-off="" /></span>
-                            </div>
-                            <hr />
-                            <label><span class="ghost">Quarble</span> {{preferences.tweeks.tanuki.quarble*100|number:0}} <br /><input type="range" ng-model="preferences.tweeks.tanuki.quarble" min="0" max="0.3" step="0.01" /></label>
-                            <label><span class="ghost">Plark</span> {{preferences.tweeks.tanuki.plark}} <br /><input type="range" ng-model="preferences.tweeks.tanuki.plark" min="0.01" max="2" step="0.01" /></label>
-                            <label><span class="ghost">Klumpf</span> {{preferences.tweeks.tanuki.klumpf}} <br /><input type="range" ng-model="preferences.tweeks.tanuki.klumpf" min="0.1" max="3" step="0.1" /></label>
-                            <label><span class="ghost">Flarp</span> {{preferences.tweeks.tanuki.flarp}} <br /><input type="range" ng-model="preferences.tweeks.tanuki.flarp" min="0" max="100" /></label>
-                            <label><span class="ghost">Ichtzy</span> {{preferences.tweeks.tanuki.ichtzy}} <br /><input type="range" ng-model="preferences.tweeks.tanuki.ichtzy" min="-45" max="45" /></label>
-                            <label><span class="ghost">Marklar</span> {{preferences.tweeks.tanuki.marklar*100|number:0}} <br /><input type="range" ng-model="preferences.tweeks.tanuki.marklar" min="0.01" max="0.99" step="0.01" /></label>
-                          </div>
-
-                          <div ng-if="mode.name === 'florix'">
-                            <label><span class="ghost">Quarble</span> {{preferences.tweeks.florix.quarble*100|number:0}} <br /><input type="range" ng-model="preferences.tweeks.florix.quarble" min="0" max="0.3" step="0.01" /></label>
-                            <label><span class="ghost">Borgee</span> {{preferences.tweeks.florix.borgee}} <br /><input type="range" ng-model="preferences.tweeks.florix.borgee" min="0" max="50" step="0.1" /></label>
-                            <label><span class="ghost">Gloosh</span> {{preferences.tweeks.florix.gloosh}} <br /><input type="range" ng-model="preferences.tweeks.florix.gloosh" min="1" max="100" step="0.1" /></label>
-                            <label><span class="ghost">Zarrt</span> {{preferences.tweeks.florix.zarrt}} <br /><input type="range" ng-model="preferences.tweeks.florix.zarrt" min="0" max="45" step="1" /></label>
-                            <hr />
-                            <label><span class="ghost">Syrris</span> {{preferences.tweeks.florix.syrris}} <br /><input type="range" ng-model="preferences.tweeks.florix.syrris" min="0" max="50" step="0.1" /></label>
-                            <label><span class="ghost">Shaado</span> {{preferences.tweeks.florix.shaado}} <br /><input type="range" ng-model="preferences.tweeks.florix.shaado" min="0" max="5" step="0.05" /></label>
-                            <label><span class="ghost">Shaada</span> {{preferences.tweeks.florix.shaada}} <br /><input type="range" ng-model="preferences.tweeks.florix.shaada" min="-5" max="5" step="0.05" /></label>
-                            <label><span class="ghost">Shaadik</span> {{kulra}} <br /><input type="range" ng-model="preferences.tweeks.florix.shaadik" min="0" max="1" step="0.01" /></label>
-                          </div>
-
-                        </div>
-                        <div class="flex-auto flex-row button-bar" ng-show="preferences.toolbox === 'display'">
-                          <div class="flex-1 bg-light" ng-style="{'padding':'1em 0','xsbackground': color}" tap="resetTweeks(mode.name)">
-                            <fa name="undo trans" size="2" fw></fa>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="panel menu">
-                      <div class="ui-fun" tap="cycleModes(mode.name)">
-                        <fa name="{{mode.icon}}" size="2" fw></fa>
-                        <div>Mode: {{mode.name}}</div>
-                      </div>
-                      <div class="ui-fun" tap="preferences.allowBW = !preferences.allowBW">
-                        <fa name="adjust" size="2" fw></fa>
-                        <div>{{(preferences.allowBW?'Hide':'Show')}} B/W</div>
-                      </div>
-                      <div class="ui-fun" tap="preferences.alwaysShowHex = !preferences.alwaysShowHex">
-                        <fa name="hashtag" size="2" fw></fa>
-                        <div>{{(preferences.alwaysShowHex?'Hide':'Show')}} HEX codes</div>
-                      </div>
-                      <div class="ui-fun" tap="preferences.showHistory = !preferences.showHistory">
-                        <fa name="history" size="2" fw></fa>
-                        <div>{{(preferences.showHistory?'Hide':'Show')}} History</div>
-                      </div>
-                      <div class="ui-fun" tap="clearColorHistory()">
-                        <fa name="undo" size="2" fw ng-class="{'ghost': !colorHistory.length}"></fa>
-                        <div>Clear History</div>
-                      </div>
-                      <div class="ui-fun" tap="shareColors()">
-                        <fa name="send" size="2" fw></fa>
-                        <div>Export Favorites</div>
-                      </div>
-                      <div class="ui-fun" tap="clearSavedColors()">
-                        <fa name="trash" size="2" fw></fa>
-                        <div>Reset Favorites</div>
-                      </div>
-                      <div class="ui-fun" tap="clearPrefs()">
-                        <fa name="wrench" size="2" fw></fa>
-                        <div>Reset Prefs</div>
-                      </div>
-                      <div class="ui-fun" tap="window.location='https://github.com/jasesmith/itchy-tanuki'">
-                        <fa name="github" size="2" fw></fa>
-                        <div>View on GitHub</div>
-                      </div>
-
-                      <!-- <div class="ui-fun" tap="preferences.useHash = !preferences.useHash">
-                        <fa name="hashtag" size="2" fw ng-class="{'ghost': !preferences.useHash}"></fa>
-                        <div>Use URLs</div>
-                      </div> -->
-
-                      <div class="panel-toggle" tap="showMenu = !showMenu"><fa name="times" size="2" fw></fa></div>
-                    </div>
-
-                  <!-- </section> -->
-
-                  <div class="palette bottom history">
-                      <div class="color-brick {{$last}}" ng-repeat="c in colorHistory" tap="doIt(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
-                        <!-- <span class="hex">{{c}}</span> -->
-                      </div>
-                      <div class="history-toggle" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false"><fa name="{{(preferences.showHistory?'times':'history')}}" size="3" fw></fa></div>
-                  </div>
-                </main>
-            </div>
-        </div>
-        <style>
-          .workspace.mode-tanuki .color-ring > div {
-            top: {{-preferences.tweeks.tanuki.flarp}}vmax;
-            right: {{-preferences.tweeks.tanuki.ichtzy}}%;
-            left: {{-preferences.tweeks.tanuki.ichtzy}}%;
-          }
-
-          .workspace.mode-florix .color-ring > div {
-            top: {{-preferences.tweeks.florix.zarrt}}vmax;
-          }
-          .workspace.mode-florix .color-ring > div .color-brick {
-            border-radius: {{preferences.tweeks.florix.borgee}}%;
-            height: {{preferences.tweeks.florix.gloosh}}%;
-          }
-          .workspace.mode-florix .color-ring > div:last-child .color-brick {
-            border-radius: 0 {{(preferences.tweeks.florix.borgee*2)}}% 10%/20% {{(preferences.tweeks.florix.borgee*10/10)+5}}%;
-          }
-          .workspace.mode-florix .color-info {
-            box-shadow: 0 {{preferences.tweeks.florix.shaado/3}}em {{preferences.tweeks.florix.shaado}}em {{preferences.tweeks.florix.shaada}}em {{kulra}};
-            border-radius: {{preferences.tweeks.florix.syrris}}%;
-          }
-        </style>
-
-    </body>
+    .mode-florix .color-ring > div {
+      top: {{-preferences.tweeks.florix.zarrt}}vmax;
+    }
+    .mode-florix .color-ring > div .color-brick {
+      border-radius: {{preferences.tweeks.florix.borgee}}%;
+      height: {{preferences.tweeks.florix.gloosh}}%;
+    }
+    .mode-florix .color-ring > div:last-child .color-brick {
+      border-radius: 0 {{(preferences.tweeks.florix.borgee*2)}}% 10%/20% {{(preferences.tweeks.florix.borgee*10/10)+5}}%;
+    }
+    .mode-florix .color-info {
+      box-shadow: 0 {{preferences.tweeks.florix.shaado/3}}em {{preferences.tweeks.florix.shaado}}em {{preferences.tweeks.florix.shaada}}em {{kulra}};
+      border-radius: {{preferences.tweeks.florix.syrris}}%;
+    }
+    </style>
+  </body>
 </html>

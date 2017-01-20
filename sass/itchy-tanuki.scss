@@ -1,76 +1,91 @@
-$dark: #363639;
-$light: #FFF;
-$timing-func: cubic-bezier(.85,-1,.15,1.6);
-
-@mixin slider-track(){
-  border-radius: 1em;
-  height: .5em;
-  background: $light;
-}
-
-@mixin slider-thumb() {
-  width: 1em;
-  height: 1em;
-  transform: scale(1.25, 1.25);
-  border: none;
-  border-radius: 100%;
-  box-shadow: 0 0 .5em 0 rgba($light, .65);
-  background: $light;
-  margin-top: -.25em;
-}
-
-// general layout
-html, body, .wrapper {
-    overflow: hidden;
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-.flex-row {
-    display: flex;
-    flex-direction: row;
-}
-.flex-wrap {
-    flex-wrap: wrap;
-}
-.flex-row-wrap {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-.flex-column {
-    display: flex;
-    flex-direction: column;
-}
-.flex-0 {
-  flex: 0 0 0px !important;
-}
-.flex-1 {
-    flex: 1;
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  transition: background 1s ease-out;
-}
-.workspace  {
-  display: flex;
-  flex-direction: row;
+.favorites {
   flex: 1;
-  position: relative;
-  z-index: 1;
-}
-.main {
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  position: relative;
-  z-index: 1;
-  font-size: 1.2vmin;
-  font-family: "DIN Alternate", monospace;
 }
+
+.controls {
+  flex: 0 0 auto;
+  background: var(--dark);
+  color: var(--light);
+  display: flex;
+}
+
+.canvas {
+
+}
+
+.sliders {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 35%;
+  display: flex;
+  flex-flow: column;
+  background: var(--smoke);
+}
+
+@supports (backdrop-filter: blur(2em)) {
+  .menu,
+  .sliders {
+    backdrop-filter: blur(2em)
+  }
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 35%;
+  display: flex;
+  flex-flow: column;
+  background: var(--smoke);
+}
+
+.history {
+
+}
+
+// states
+.favoritesActive {
+  .canvas {
+    flex: 0 0 auto;
+  }
+}
+
+// get/set these in script
+// var(--tanuki-flarp) -vmax
+// var(--tanuki-ichtzy) -%
+// var(--florix-zarrt) -vmax
+// var(--florix-borgee) %
+// var(--florix-borgee) *2 %
+// var(--florix-borgee) *10/10)+5 %
+// var(--florix-gloosh) %
+// var(--florix-shaado) em
+// var(--florix-shaado) /3 em
+// var(--florix-shaada) em
+// var(--florix-syrris) %
+// var(--kulra)
+
+
+// .mode-tanuki .color-ring > div {
+//   top: {{-preferences.tweeks.tanuki.flarp}}vmax;
+//   right: {{-preferences.tweeks.tanuki.ichtzy}}%;
+//   left: {{-preferences.tweeks.tanuki.ichtzy}}%;
+// }
+//
+// .mode-florix .color-ring > div {
+//   top: {{-preferences.tweeks.florix.zarrt}}vmax;
+// }
+// .mode-florix .color-ring > div .color-brick {
+//   border-radius: {{preferences.tweeks.florix.borgee}}%;
+//   height: {{preferences.tweeks.florix.gloosh}}%;
+// }
+// .mode-florix .color-ring > div:last-child .color-brick {
+//   border-radius: 0 {{(preferences.tweeks.florix.borgee*2)}}% 10%/20% {{(preferences.tweeks.florix.borgee*10/10)+5}}%;
+// }
+// .mode-florix .color-info {
+//   box-shadow: 0 {{preferences.tweeks.florix.shaado/3}}em {{preferences.tweeks.florix.shaado}}em {{preferences.tweeks.florix.shaada}}em {{kulra}};
+//   border-radius: {{preferences.tweeks.florix.syrris}}%;
+// }

@@ -1,8 +1,13 @@
+// fonts
+@import url('https://fonts.googleapis.com/css?family=Caveat|Yanone+Kaffeesatz');
+
+// partials
 @import 'variables';
 @import 'base';
 @import 'colors';
 @import 'animations';
 @import 'layout';
+@import 'elements';
 // @import 'inputs';
 @import 'sortables';
 
@@ -11,6 +16,8 @@
 
 // host app
 @import 'example';
+
+@import 'itchy-tanuki';
 
 // last
 @import 'mediaQueries';

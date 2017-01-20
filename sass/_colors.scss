@@ -1,23 +1,28 @@
+body {
+  background: var(--light);
+  color: var(--dark);
+}
+
 .bg-air {background: transparent;}
-.bg-apple {background: $apple;color: contrast-color($apple);}
-.bg-tangerine {background: $tangerine;color: contrast-color($tangerine);}
-.bg-banana {background: $banana;color: contrast-color($banana);}
-.bg-kiwi {background: $kiwi;color: contrast-color($kiwi);}
-.bg-sky {background: $sky;color: contrast-color($sky);}
-.bg-berry {background: $berry;color: contrast-color($berry);}
-.bg-plum {background: $plum;color: contrast-color($plum);}
-.bg-light {background: $light;color: contrast-color($light);}
-.bg-dark {background: $dark;color: contrast-color($dark);}
-.bg-active {background: $active;color: contrast-color($active);}
+.bg-apple {background: var(--apple);color: contrast-color($apple);}
+.bg-tangerine {background: var(--tangerine);color: contrast-color($tangerine);}
+.bg-banana {background: var(--banana);color: contrast-color($banana);}
+.bg-kiwi {background: var(--kiwi);color: contrast-color($kiwi);}
+.bg-sky {background: var(--sky);color: contrast-color($sky);}
+.bg-berry {background: var(--berry);color: contrast-color($berry);}
+.bg-plum {background: var(--plum);color: contrast-color($plum);}
+.bg-light {background: var(--light);color: contrast-color($light);}
+.bg-dark {background: var(--dark); color: contrast-color($dark);}
+.bg-active {background: var(--active);color: contrast-color($active);}
 
 .fg-air {color: transparent;}
-.fg-apple {color: $apple;}
-.fg-tangerine {color: $tangerine;}
-.fg-banana {color: $banana;}
-.fg-kiwi {color: $kiwi;}
-.fg-sky {color: $sky;}
-.fg-berry {color: $berry;}
-.fg-plum {color: $plum;}
-.fg-light {color: $light;}
-.fg-dark {color: $dark;}
-.fg-active {color: $active;}
+.fg-apple {color: var(--apple);}
+.fg-tangerine {color: var(--tangerine);}
+.fg-banana {color: var(--banana);}
+.fg-kiwi {color: var(--kiwi);}
+.fg-sky {color: var(--sky);}
+.fg-berry {color: var(--berry);}
+.fg-plum {color: var(--plum);}
+.fg-light {color: var(--light);}
+.fg-dark {color: var(--dark);} //$dark;}
+.fg-active {color: var(--active);}

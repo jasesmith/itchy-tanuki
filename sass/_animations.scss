@@ -5,32 +5,34 @@
     100% {transform:translateY(0);}
 }
 
+@keyframes flex-grow {
+  100% {flex: 1;}
+}
+@keyframes flex-shrink {
+  100% {flex: 0 0 auto;}
+}
+
 @keyframes flexGrow-0-1 {
-    from {flex: 0;}
-    to {flex: 1;}
+    0% {flex-grow: 0;}
+    100% {flex-grow: 1;}
 }
 
 @keyframes flexShrink-1-0 {
-    from {flex: 1;}
-    to {flex: 0;}
+    0% {flex-shrink: 1;}
+    100% {flex-shrink: 0;}
 }
 
 @keyframes flexGrow-1-2 {
-    from {flex: 1;}
-    to {flex: 2;}
+    0% {flex-grow: 1;}
+    100% {flex-grow: 2;}
 }
 
 @keyframes flexShrink-2-1 {
-    from {flex: 2;}
-    to {flex: 1;}
+    0% {flex-shrink: 2;}
+    100% {flex-shrink: 1;}
 }
-
-
 
 // utility classes
 .floating {
-    animation-name:floating;
-    animation-duration:2s;
-    animation-iteration-count:infinite;
-    animation-timing-function: linear;
+    animation: floating 2s infinite linear;
 }

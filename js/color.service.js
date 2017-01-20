@@ -3,7 +3,6 @@
 
   $angular.module('app').factory('ColorService', [function(){
 
-    var _hexChars = '0123456789ABCDEF';
     /*
      Use a singleton cache of all color strings we see.
      Each key points to a structure, which can have hex, rgb, etc. values in it.
@@ -218,7 +217,7 @@
     };
 
     var brightness = function(color){
-      var r, g, b, brightness;
+      var r, g, b;
 
       if (color.match(/^rgb/)) {
         color = color.match(/rgb\(([^)]+)\)/)[1];
@@ -236,17 +235,11 @@
         b = parseInt(color[3] + color[3], 16);
       }
 
-      brightness = (r * 299 + g * 587 + b * 114) / 1000;
-
-      return brightness;
+      return (r * 299 + g * 587 + b * 114) / 1000;
     };
 
     var randomHex = function() {
-      var hex = '#';
-      for (var i = 0; i < 6; i++ ) {
-        hex += _hexChars.charAt(Math.floor(Math.random() * _hexChars.length));
-      }
-      return hex;
+      return '#' + ('00' + Math.floor(Math.random() * 16777215).toString(16)).substr(-6);
     };
 
     return {

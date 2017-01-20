@@ -19,7 +19,14 @@
     "tests"
   ],
   "dependencies": {
-    "angular-fontawesome": "~1.0.0",
-    "ng-sortable": "~1.3.2"
+    "underscore": "^1.x",
+    "moment": "^2.x",
+    "angular": "^1.5.x",
+    "angular-animate": "~1.x",
+    "hammerjs": "hammer.js#^2.x",
+    "hammer-time": "^1.x",
+    "font-awesome": "^4.x",
+    "angular-fontawesome": "^1.x",
+    "ng-sortable": "~1.x"
   }
 }

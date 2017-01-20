@@ -7,3 +7,22 @@
 
 @media screen and (max-width: 1024px) and (orientation:landscape), screen and (max-height: 768px) and (orientation:landscape) {
 }
+
+@media screen and (max-width: 40em), screen and (orientation: portrait) {
+  .workspace {
+    .main {
+      font-size: 1vmax;
+    }
+    // .canvas {
+    //   flex-direction: column;
+    // }
+  }
+}
+
+// @media screen and (min-resolution: 192dpi) {
+//   .menu,
+//   .sliders > div:not(.gap) {
+//     background-color: rgba(#000, .35);
+//     backdrop-filter: blur(2em);
+//   }
+// }

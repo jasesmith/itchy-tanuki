@@ -14,17 +14,70 @@ $sky: #15c5ec;
 $berry: #c657af;
 $plum: #7f3fa6;
 
-$transition: all .3s;
 $gutter: 2rem;
 
-$base-font: "Helvetica Neue", "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, Arial, "Lucida Grande", sans-serif;
-$code-font: Consolas, Monaco, 'Andale Mono', monospace;
+$base-font: 'Yanone Kaffeesatz', Helvetica, Arial, sans-serif;
+$code-font: Caveat, Consolas, Monaco, 'Andale Mono', monospace;
 
-// functions
-@function contrast-color($color) {
-    @return color-contrast($color);
+:root {
+  --dark: $dark;
+  --light: $light;
+  --active: $active;
+  --smoke: rgba($dark, .65);
+  --mist: rgba($light, .65);
+  --text-default-dark: var(--dark);
+  --text-default-light: var(--light);
+  --timing-func: cubic-bezier(.85,-1,.15,1.6);
+  --major-timing: 1500ms;
+  --minor-timing: 300ms;
+  --gutter: $gutter;
+  --base-font: $base-font;
+  --code-font: $code-font;
+  --apple: $apple;
+  --tangerine: $tangerine;
+  --banana: $banana;
+  --kiwi: $kiwi;
+  --sky: $sky;
+  --berry: $berry;
+  --plum: $plum;
+
+  // get these from script
+  // --tanuki-flarp: 0-vmax;
+  // --tanuki-ichtzy: 0-%;
+  // --florix-zarrt: 0-vmax;
+  // --florix-borgee: 0%;
+  // --florix-borgee2: 0*2 %;
+  // --florix-borgee5: (0*10/10)+5%;
+  // --florix-gloosh: 0%;
+  // --florix-shaado: 0em;
+  // --florix-shaado3: 0/3 em;
+  // --florix-shaada: 0em;
+  // --florix-syrris: 0%;
+  // --kulra: #000;
 }
 
+// mixins
+// --------------------------------------------------
+@mixin slider-track($color: $light){
+  border-radius: 1em;
+  height: .5em;
+  background: $color;
+}
+
+@mixin slider-thumb($color: $light) {
+  width: 1em;
+  height: 1em;
+  transform: scale(1.25, 1.25);
+  border: none;
+  border-radius: 100%;
+  box-shadow: 0 0 .5em 0 rgba($color, .65);
+  background: $color;
+  margin-top: -.25em;
+}
+
+
+// functions
+// --------------------------------------------------
 // from: http://codepen.io/bluesaunders/details/FCLaz
 // Calculate brightness of a given color.
 @function brightness($color) {
@@ -45,8 +98,13 @@ $code-font: Consolas, Monaco, 'Andale Mono', monospace;
   }
 }
 
+// pass-through cause which part is first, color or contrast?
+@function contrast-color($color) {
+  @return color-contrast($color);
+}
+
 // mixins
-@mixin background-stripes($alpha:0.05, $angle:-45deg, $size:1rem) {
+@mixin background-stripes($color: $light, $alpha: 0.05, $angle: -45deg, $size: 1rem) {
     background-size: $size $size;
-    background-image: linear-gradient($angle, rgba(#FFF, $alpha) 25%, transparent 25%, transparent 50%, rgba(#FFF, $alpha) 50%, rgba(#FFF, $alpha) 75%, transparent 75%, transparent);
+    background-image: linear-gradient($angle, rgba($color, $alpha) 25%, transparent 25%, transparent 50%, rgba($color, $alpha) 50%, rgba($color, $alpha) 75%, transparent 75%, transparent);
 }

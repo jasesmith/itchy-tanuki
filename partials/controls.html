@@ -1,0 +1,15 @@
+<div class="flex-1" ng-class="{'fg-active': showMenu}">
+  <b tap="showMenu = !showMenu;showSliders=false"><fa name="heart" size="large" fw ng-show="preferences.showFavs"></fa> ITCHY TANUKI <span class="ghost" ng-show="preferences.showFavs">FAVORITES</span></b>
+</div>
+
+<div tap="preferences.useHash = !preferences.useHash" ng-show="!preferences.showFavs">
+  <fa name="hashtag" ng-class="{'ghost': !preferences.useHash}"></fa>
+</div>
+
+<div tap="cycleModes(mode.name)" ng-show="!preferences.showFavs"><fa name="{{mode.icon}}" size="large" fw></fa></div>
+
+<div tap="shareColors()" ng-show="preferences.showFavs"><fa name="send" size="large" fw></fa></div>
+
+<div tap="showSliders = !showSliders;showMenu=false" ng-class="{'fg-active': showSliders}" ng-show="!preferences.showFavs"><fa name="sliders" size="large" fw></fa></div>
+
+<div tap="preferences.showFavs = !preferences.showFavs;showMenu=false;showSliders=false;preferences.showHistory=false" ng-class="{'fg-active': preferences.showFavs}"><fa name="th" size="large" fw></fa></div>

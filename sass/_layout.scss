@@ -1,0 +1,62 @@
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  display: flex;
+  flex-flow: column;
+  overflow: hidden;
+}
+// .wrapper {
+//   flex: 1;
+//   display: flex;
+//   flex-flow: row;
+//   overflow: hidden;
+// }
+.workspace  {
+  flex: 1;
+  display: flex;
+  flex-flow: row;
+}
+.main {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  font-size: 1.2vmin;
+}
+.canvas {
+  flex: 5;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  animation: flex-grow var(--major-timing) ease-out paused;
+  transition: background-color var(--minor-timing) linear;
+}
+
+.row {
+  display: flex;
+  flex-flow: row;
+}
+.column {
+  display: flex;
+  flex-flow: column;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+
+.flex-0 {
+  flex: 0 !important;
+}
+.flex-1 {
+  flex: 1 !important;
+}
+.flex-2 {
+  flex: 2 !important;
+}
+.flex-auto {
+  flex: 0 0 auto !important;
+}

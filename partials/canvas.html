@@ -1,0 +1,20 @@
+<div class="dial"></div>
+<div class="color-display column" ng-class="{'no-trans': preferences.tweeks[mode.name].quarble == 0}">
+
+  <div class="color-ring-outer">
+    <div class="color-ring" ng-style="setRingRotation()">
+      <div ng-repeat="c in shades track by $index" ng-style="setRotation($index)">
+        <div class="color-brick" tap="doIt(c)" ng-class="setClasses(c, color, false)" ng-style="{'backgroundColor': c}">
+          <!-- <span class="hex" ng-if="!$last && mode.name !== 'tanuki'">{{c}}</span> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-info column" ng-class="setClasses(tuner.hex, null, true)" ng-style="{'background': 'rgb('+tuner.r+','+tuner.g+','+tuner.b+')'}">
+    <div tap="saveColor(tuner.hex)"><fa name="{{(isSaved(tuner.hex) ? 'heart':'heart-o')}}" size="4" fw></fa></div>
+    <h1><a class="hex" href="/{{tuner.hex}}">{{tuner.hex}}</a></h1>
+    <div class="refresh" tap="doIt()"><fa name="refresh" size="3" fw></fa></div>
+  </div>
+
+</div>

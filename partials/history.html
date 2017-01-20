@@ -1,0 +1,6 @@
+<div class="history-toggle" tap="preferences.showHistory = !preferences.showHistory;preferences.showFavs=false">
+  <fa name="{{(preferences.showHistory?'times':'history')}}" size="3" fw></fa>
+</div>
+<div class="color-brick {{$last}}" ng-repeat="c in colorHistory" tap="doIt(c)" ng-style="{'background': c}" ng-class="setClasses(c, color, true)">
+  <!-- <span class="hex">{{c}}</span> -->
+</div>

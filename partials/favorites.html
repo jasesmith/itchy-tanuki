@@ -1,0 +1,6 @@
+<div class="color-brick" ng-repeat="c in myColors" ng-class="setClasses(c, color, true)" ng-style="{'background': c}" as-sortable-item>
+  <div tap="doIt(c)" as-sortable-item-handle></div>
+  <!-- <span>{{c}}</span> -->
+  <a class="hex" href="/{{c}}">{{c}}</a>
+  <div class="manage ghost" tap="saveColor(c)"><fa name="minus-circle" size="large"></fa></div>
+</div>

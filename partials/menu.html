@@ -1,0 +1,51 @@
+<div class="ui-fun" tap="cycleModes(mode.name)">
+  <fa name="{{mode.icon}}" size="2" fw></fa>
+  <div>Mode: {{mode.name}}</div>
+</div>
+
+<div class="ui-fun" tap="preferences.allowBW = !preferences.allowBW">
+  <fa name="adjust" size="2" fw></fa>
+  <div>{{(preferences.allowBW?'Hide':'Show')}} B/W</div>
+</div>
+
+<div class="ui-fun" tap="preferences.alwaysShowHex = !preferences.alwaysShowHex">
+  <fa name="hashtag" size="2" fw></fa>
+  <div>{{(preferences.alwaysShowHex?'Hide':'Show')}} HEX codes</div>
+</div>
+
+<div class="ui-fun" tap="preferences.showHistory = !preferences.showHistory">
+  <fa name="history" size="2" fw></fa>
+  <div>{{(preferences.showHistory?'Hide':'Show')}} History</div>
+</div>
+
+<div class="ui-fun" tap="clearColorHistory()">
+  <fa name="undo" size="2" fw ng-class="{'ghost': !colorHistory.length}"></fa>
+  <div>Clear History</div>
+</div>
+
+<div class="ui-fun" tap="shareColors()">
+  <fa name="send" size="2" fw></fa>
+  <div>Export Favorites</div>
+</div>
+
+<div class="ui-fun" tap="clearSavedColors()">
+  <fa name="trash" size="2" fw></fa>
+  <div>Reset Favorites</div>
+</div>
+
+<div class="ui-fun" tap="clearPrefs()">
+  <fa name="wrench" size="2" fw></fa>
+  <div>Reset Prefs</div>
+</div>
+
+<div class="ui-fun" tap="window.location='https://github.com/jasesmith/itchy-tanuki'">
+  <fa name="github" size="2" fw></fa>
+  <div>View on GitHub</div>
+</div>
+
+<!-- <div class="ui-fun" tap="preferences.useHash = !preferences.useHash">
+<fa name="hashtag" size="2" fw ng-class="{'ghost': !preferences.useHash}"></fa>
+<div>Use URLs</div>
+</div> -->
+
+<div class="panel-toggle" tap="showMenu = !showMenu"><fa name="times" size="2" fw></fa></div>
